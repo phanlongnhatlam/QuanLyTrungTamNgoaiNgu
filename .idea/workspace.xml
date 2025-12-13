@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a585c766-a6b1-495d-9563-c8eab570353d" name="Changes" comment="hi" />
+    <list default="true" id="a585c766-a6b1-495d-9563-c8eab570353d" name="Changes" comment="hi">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,6 +16,7 @@
         <option value="Flask Main" />
         <option value="Python Script" />
         <option value="HTML File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -30,6 +34,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;phanlongnhatlam&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/phanlongnhatlam/QuanLyTrungTamNgoaiNgu.git&quot;,
+    &quot;accountId&quot;: &quot;e7c0be6b-cbd2-44fc-8fa3-9fdb50b04365&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -52,7 +68,7 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -185,7 +201,9 @@
       <workItem from="1765626303161" duration="617000" />
       <workItem from="1765627094336" duration="53000" />
       <workItem from="1765627221677" duration="287000" />
-      <workItem from="1765627588555" duration="709000" />
+      <workItem from="1765627588555" duration="1579000" />
+      <workItem from="1765629234684" duration="45000" />
+      <workItem from="1765629280612" duration="27000" />
     </task>
     <servers />
   </component>
