@@ -1,3 +1,5 @@
+import hashlib
+
 from models import User, Course, Class, ClassStatus  # Import models mới
 from TrungTamNgoaiNgu import db  # Hoặc from saleapp import db tùy cấu trúc của bạn
 
@@ -11,14 +13,14 @@ def load_courses():
 # 2. Hàm load danh sách Lớp học (Để hiển thị dưới trang chủ)
 # Thay thế cho load_products cũ
 def load_classes(course_id=None, kw=None):
-    # Mặc định chỉ lấy các lớp đang MỞ
     query = Class.query.filter(Class.status == ClassStatus.OPEN)
 
-    # Nếu có chọn Tab (course_id) thì lọc theo course_id
+    # --- ĐOẠN QUAN TRỌNG NHẤT ---
+    # Nếu controller gửi course_id xuống, thì chỉ lấy lớp thuộc course đó
     if course_id:
         query = query.filter(Class.course_id == int(course_id))
+    # -----------------------------
 
-    # Nếu có nhập từ khóa tìm kiếm
     if kw:
         query = query.filter(Class.name.contains(kw))
 
@@ -31,3 +33,13 @@ def get_class_by_id(class_id):
 def get_user_by_id(user_id):
     # Tìm user trong database theo ID
     return User.query.get(user_id)
+def auth_user(username,password):
+    password = hashlib.md5(password.encode("utf-8")).hexdigest()
+    return User.query.filter(User.username.__eq__(username), User.password.__eq__(password)).first()
+
+def add_user(name, username, password, avatar):
+    password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
+    u = User(name=name, username=username.strip(), password=password, avatar=avatar)
+    db.session.add(u)
+    db.session.commit()
+    return u

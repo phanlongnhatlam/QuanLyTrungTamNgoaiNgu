@@ -1,29 +1,35 @@
-{%extends 'layout/base.html'%}
+{% extends 'layout/base.html' %}
 
+{% block content %}
+<h1 class="text-center text-info">DANH SÁCH LỚP HỌC</h1>
 
-{%block content%}
-{#{%if pages>1%}#}
-{#<ul class="pagination mt-3">#}
-{#    {%for i in range(1, (pages+1))%}#}
-{#    <li class="page-item"><a class="page-link" href="/?page={{i}}">{{i}}</a></li>#}
-{#    {%endfor%}#}
-{#</ul>#}
-{#{%endif%}#}
 <div class="row">
-    {%for p in prods%}
-    <div class="col-md-3 col-12" style="padding:0.7rem">
+    {% for c in classes %}
+    <div class="col-md-3 col-xs-12" style="padding: 5px;">
         <div class="card">
-            <img class="card-img-top" src="{{p.image}}" alt="{{p.name}}">
+            <img class="card-img-top" src="{{c.image}}" alt="{{ c.name }}">
+
             <div class="card-body">
-                <h4 class="card-title">{{p.name}}</h4>
-                <p class="card-text">{{p.price}}</p>
-                <a href="/products/{{p.id}}" class="btn btn-primary">Xem chi tiết</a>
-                <a href="javascript:;" class="btn btn-danger" onclick="addToCart({{p.id}}, '{{p.name}}', {{p.price}})">Mua hàng</a>
+                <h4 class="card-title">{{ c.name }}</h4>
+
+                <p class="card-text">Lịch: {{ c.schedule }}</p>
+
+                <p class="card-text">Phòng: {{ c.room }}</p>
+
+                <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                <a href="#" class="btn btn-danger">Đăng ký</a>
             </div>
         </div>
     </div>
-    {%endfor%}
+    {% endfor %}
 </div>
 
-{%endblock%}
+{#{% if pages > 1 %}#}
+{#<ul class="pagination justify-content-center mt-3">#}
+{#    {% for i in range(1, pages + 1) %}#}
+{#    <li class="page-item"><a class="page-link" href="/?page={{ i }}">{{ i }}</a></li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+{#{% endif %}#}
 
+{% endblock %}

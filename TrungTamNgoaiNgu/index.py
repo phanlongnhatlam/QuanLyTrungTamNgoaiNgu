@@ -1,24 +1,72 @@
-from flask import render_template, request
-from TrungTamNgoaiNgu import app, dao, login
+import cloudinary
+from flask import render_template, request, redirect
+from flask_login import login_user
+
+from TrungTamNgoaiNgu import app, dao, login, db
+from TrungTamNgoaiNgu.decoraters import anonymous_required
 
 
 @app.route("/")
 def index():
     q = request.args.get('q')
     course_id = request.args.get('id')
-
-    return render_template("index.html")
-
+    course_id = request.args.get('course_id')
+    classes = dao.load_classes(course_id=course_id,kw=q)
+    # pages = math.ceil(dao.count_product() / app.config["PAGE_SIZE"])
+    return render_template("index.html", classes=classes)
 @login.user_loader
 def load_user(user_id):
     return dao.get_user_by_id(user_id)
-
 @app.context_processor
 def common_attribute():
     return {
         'courses': dao.load_courses()
     }
+@app.route("/login", methods=["get", "post"])
+@anonymous_required
+def login_my_user():
+    err_msg = None
+    if request.method.__eq__("POST"):
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        user = dao.auth_user(username, password)
+
+        if user:
+            login_user(user)
+            next = request.args.get('next')
+            return redirect(next if next else "/")
+        else:
+            err_msg = "Tài khoản hoặc mật khẩu không đúng!"
+
+    return render_template("login.html", err_msg=err_msg)
+@app.route("/register", methods=['get', 'post'])
+def register():
+    err_msg = None
+    if request.method.__eq__("POST"):
+        password = request.form.get("password")
+        confirm = request.form.get("confirm")
+
+        if password.__eq__(confirm):
+            name = request.form.get('name')
+            username = request.form.get("username")
+            avatar = request.files.get('avatar')
+            file_path = None
+
+            if avatar:
+                res = cloudinary.uploader.upload(avatar)
+                file_path = res['secure_url']
+
+            try:
+                dao.add_user(name, username, password, avatar=file_path)
+                return redirect('/login')
+            except:
+                db.session.rollback()
+                err_msg = "Hệ thống đang bị lỗi! Vui lòng quay lại sau!"
+        else:
+            err_msg = "Mật khẩu không khớp!"
+
+    return render_template("register.html", err_msg=err_msg)
 
 if __name__ == '__main__':
-    from TrungTamNgoaiNgu.admin import *
     app.run(debug=True)

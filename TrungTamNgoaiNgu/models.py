@@ -1,9 +1,11 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, DateTime, Enum, Text
-from sqlalchemy.orm import relationship
-from datetime import datetime
-from flask_login import UserMixin
 import enum
 import hashlib
+from datetime import datetime
+
+from flask_login import UserMixin
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Enum, Text
+from sqlalchemy.orm import relationship
+
 # LƯU Ý: Sửa dòng này thành tên package của bạn (ví dụ: from saleapp import db, app)
 # Nếu file __init__.py nằm cùng cấp thì dùng: from __init__ import db, app
 from TrungTamNgoaiNgu import db, app
@@ -84,7 +86,8 @@ class Class(db.Model):
     schedule = Column(String(100))  # VD: T2-T4-T6 (19h-21h)
     max_students = Column(Integer, default=25)
     start_date = Column(DateTime, default=datetime.now())  # Ngày khai giảng
-
+    image = Column(String(300),
+                   default="https://res.cloudinary.com/dy1unykph/image/upload/v1741254148/aa0aawermmvttshzvjhc.png")
     status = Column(Enum(ClassStatus), default=ClassStatus.OPEN)
 
     # Khóa ngoại
@@ -140,53 +143,107 @@ class Invoice(db.Model):
 # =========================================================
 if __name__ == '__main__':
     with app.app_context():
-        # A. Tạo bảng
+        # 1. Làm sạch và tạo lại bảng
+        db.drop_all()  # Bỏ comment dòng này nếu muốn xóa sạch dữ liệu cũ làm lại từ đầu
         db.create_all()
 
-        # B. Kiểm tra xem có dữ liệu chưa, nếu chưa thì tạo mới
-        if not User.query.filter(User.username == 'admin').first():
+        # Chỉ tạo dữ liệu nếu chưa có Admin
+        # if not User.query.filter(User.username == 'admin').first():
+        # --- A. TẠO USER (Giáo viên & Staff) ---
 
-            # --- 1. TẠO USER (4 Role) ---
-            hashed_pw = hashlib.md5('123456'.encode('utf-8')).hexdigest()
+        hashed_pw = hashlib.md5('123456'.encode('utf-8')).hexdigest()
 
-            u_admin = User(name='Quản Trị Viên', username='admin', password=hashed_pw, role=UserRole.ADMIN)
-            u_staff = User(name='Thu Ngân Viên', username='staff', password=hashed_pw, role=UserRole.STAFF)
-            u_teacher1 = User(name='Thầy Tuấn (IELTS)', username='teacher1', password=hashed_pw, role=UserRole.TEACHER)
-            u_teacher2 = User(name='Cô Lan (Nhật)', username='teacher2', password=hashed_pw, role=UserRole.TEACHER)
-            u_student = User(name='Nguyễn Văn Học', username='student', password=hashed_pw, role=UserRole.STUDENT)
+        u_admin = User(name='Quản Trị Viên', username='admin', password=hashed_pw, role=UserRole.ADMIN)
+        u_staff = User(name='Lễ Tân (Thu Ngân)', username='staff', password=hashed_pw, role=UserRole.STAFF)
 
-            db.session.add_all([u_admin, u_staff, u_teacher1, u_teacher2, u_student])
-            db.session.commit()
+        # Giáo viên chuyên biệt
+        u_teacher_toeic = User(name='Ms. Jenny (TOEIC)', username='jenny', password=hashed_pw,
+                               role=UserRole.TEACHER)
+        u_teacher_ielts = User(name='Mr. Mark (IELTS)', username='mark', password=hashed_pw, role=UserRole.TEACHER)
+        u_teacher_jap = User(name='Cô Akira (Nhật)', username='akira', password=hashed_pw, role=UserRole.TEACHER)
+        u_teacher_kor = User(name='Thầy Park (Hàn)', username='park', password=hashed_pw, role=UserRole.TEACHER)
+        u_teacher_fra = User(name='Thầy Pierre (Pháp)', username='pierre', password=hashed_pw,
+                             role=UserRole.TEACHER)
+        u_student = User(name='Học Viên Mẫu', username='student', password=hashed_pw, role=UserRole.STUDENT)
 
-            # --- 2. TẠO COURSE (Các tab trên Menu) ---
-            c1 = Course(name='Tiếng Anh', description='0 bt nx')
-            c2 = Course(name='Tiếng Nhật', description='Cam kết đầu ra 6.0+')
-            c3 = Course(name='Tiếng Pháp', description='Nhập môn tiếng Nhật')
-            c4 = Course(name='Tiếng Hàn', description='Sơ cấp tiếng Hàn')
+        db.session.add_all(
+            [u_admin, u_staff, u_teacher_toeic, u_teacher_ielts, u_teacher_jap, u_teacher_kor, u_teacher_fra,
+             u_student])
+        db.session.commit()
 
-            db.session.add_all([c1, c2, c3, c4])
-            db.session.commit()
+        # --- B. TẠO COURSE (Các Tab Ngôn Ngữ) ---
+        # Đây là 4 cái Tab trên Menu của bạn
+        c_eng = Course(name='Tiếng Anh', description='Đào tạo TOEIC, IELTS, Giao tiếp chuẩn Quốc tế')
+        c_jap = Course(name='Tiếng Nhật', description='Tiếng Nhật sơ cấp đến cao cấp (JLPT)')
+        c_kor = Course(name='Tiếng Hàn', description='Luyện thi Topik & Xuất khẩu lao động')
+        c_fra = Course(name='Tiếng Pháp', description='Tiếng Pháp du học & Giao tiếp')
 
-            # --- 3. TẠO CLASS (Các lớp cụ thể để đăng ký) ---
-            classes = [
-                # Lớp Tiếng Anh Giao Tiếp (c1)
-                Class(name='TA-GT-Sáng', room='P101', schedule='T2-T4-T6 (08h-10h)', course_id=c1.id,
-                      teacher_id=u_teacher1.id),
-                Class(name='TA-GT-Tối', room='P102', schedule='T3-T5-T7 (19h-21h)', course_id=c1.id,
-                      teacher_id=u_teacher1.id),
+        db.session.add_all([c_eng, c_jap, c_kor, c_fra])
+        db.session.commit()
 
-                # Lớp IELTS (c2)
-                Class(name='IELTS-Cấp Tốc', room='Lab 1', schedule='T7-CN (Full ngày)', course_id=c2.id,
-                      teacher_id=u_teacher1.id),
+        # --- C. TẠO CLASS (Các lớp cụ thể theo yêu cầu của bạn) ---
+        classes = [
+            # ================= TIẾNG ANH (Đa dạng thể loại) =================
+            # 1. Tiếng Anh Giao Tiếp
+            Class(name='[Giao Tiếp] ENG-COMM-K01', room='P.101', schedule='T2-T4-T6 (19h30)',
+                  course_id=c_eng.id, teacher_id=u_teacher_ielts.id,
+                  image="https://th.bing.com/th/id/OIP.MRnmMkq6rO3XEoT8d_nqgAHaEj?w=292&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
 
-                # Lớp Tiếng Nhật (c3)
-                Class(name='JP-N5-K12', room='P205', schedule='T2-T4-T6 (18h-20h)', course_id=c3.id,
-                      teacher_id=u_teacher2.id),
+            # 2. TOEIC 2 Kỹ Năng (Nghe - Đọc)
+            Class(name='[TOEIC 2KN] Luyện Đề 550+', room='Lab 1', schedule='T3-T5-T7 (18h00)',
+                  course_id=c_eng.id, teacher_id=u_teacher_toeic.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
 
-                # Lớp Tiếng Hàn (c4)
-                Class(name='KR-Topik-K01', room='P301', schedule='T3-T5 (18h-20h)', course_id=c4.id,
-                      teacher_id=u_teacher2.id)
-            ]
+            # 3. TOEIC 4 Kỹ Năng (Nghe - Nói - Đọc - Viết)
+            Class(name='[TOEIC 4KN] Toàn Diện', room='Lab 2', schedule='T7-CN (08h00 - 11h00)',
+                  course_id=c_eng.id, teacher_id=u_teacher_toeic.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
 
-            db.session.add_all(classes)
-            db.session.commit()
+            # 4. IELTS (Academic)
+            Class(name='[IELTS] Foundation 5.0+', room='P.VIP', schedule='T2-T4-T6 (18h00)',
+                  course_id=c_eng.id, teacher_id=u_teacher_ielts.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # ================= TIẾNG NHẬT (Theo cấp độ N) =================
+            # 1. N5 (Sơ cấp)
+            Class(name='[N5] Tiếng Nhật Vỡ Lòng', room='P.201', schedule='T2-T4-T6 (17h30)',
+                  course_id=c_jap.id, teacher_id=u_teacher_jap.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # 2. N4 (Sơ cấp 2)
+            Class(name='[N4] Minna no Nihongo II', room='P.202', schedule='T3-T5-T7 (19h30)',
+                  course_id=c_jap.id, teacher_id=u_teacher_jap.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # 3. Luyện thi JLPT
+            Class(name='[Luyện Thi] JLPT N3 Cấp Tốc', room='P.203', schedule='T7-CN (14h00)',
+                  course_id=c_jap.id, teacher_id=u_teacher_jap.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # ================= TIẾNG HÀN (Theo Topik) =================
+            # 1. Sơ cấp 1
+            Class(name='[Topik I] Hàn Ngữ Nhập Môn', room='P.301', schedule='T2-T4 (18h00)',
+                  course_id=c_kor.id, teacher_id=u_teacher_kor.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # 2. Giao tiếp văn phòng
+            Class(name='[Giao Tiếp] Tiếng Hàn Văn Phòng', room='P.302', schedule='CN (Full ngày)',
+                  course_id=c_kor.id, teacher_id=u_teacher_kor.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # ================= TIẾNG PHÁP (Theo khung châu Âu) =================
+            # 1. A1 Débutant
+            Class(name='[A1] Tiếng Pháp Cơ Bản', room='P.401', schedule='T3-T5 (18h00)',
+                  course_id=c_fra.id, teacher_id=u_teacher_fra.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # 2. Luyện thi DELF
+            Class(name='[DELF B1] Luyện Thi B1', room='P.402', schedule='T7-CN (09h00)',
+                  course_id=c_fra.id, teacher_id=u_teacher_fra.id,
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+        ]
+
+        db.session.add_all(classes)
+        db.session.commit()
+
+        print(">>> ĐÃ TẠO DỮ LIỆU THÀNH CÔNG VỚI ĐẦY ĐỦ CÁC LOẠI LỚP!")
