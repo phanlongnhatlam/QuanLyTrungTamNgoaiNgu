@@ -1,25 +1,29 @@
+{%extends 'layout/base.html'%}
 
-<div class="container-fluid p-5 bg-primary text-white text-center">
-  <h1>My First Bootstrap Page</h1>
-  <p>Resize this responsive page to see the effect!</p>
+
+{%block content%}
+{#{%if pages>1%}#}
+{#<ul class="pagination mt-3">#}
+{#    {%for i in range(1, (pages+1))%}#}
+{#    <li class="page-item"><a class="page-link" href="/?page={{i}}">{{i}}</a></li>#}
+{#    {%endfor%}#}
+{#</ul>#}
+{#{%endif%}#}
+<div class="row">
+    {%for p in prods%}
+    <div class="col-md-3 col-12" style="padding:0.7rem">
+        <div class="card">
+            <img class="card-img-top" src="{{p.image}}" alt="{{p.name}}">
+            <div class="card-body">
+                <h4 class="card-title">{{p.name}}</h4>
+                <p class="card-text">{{p.price}}</p>
+                <a href="/products/{{p.id}}" class="btn btn-primary">Xem chi tiết</a>
+                <a href="javascript:;" class="btn btn-danger" onclick="addToCart({{p.id}}, '{{p.name}}', {{p.price}})">Mua hàng</a>
+            </div>
+        </div>
+    </div>
+    {%endfor%}
 </div>
 
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-sm-4">
-      <h3>Column 1</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-    <div class="col-sm-4">
-      <h3>Column 2</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-    <div class="col-sm-4">
-      <h3>Column 3</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
-    </div>
-  </div>
-</div>
+{%endblock%}
+
