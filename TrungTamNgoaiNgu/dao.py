@@ -1,6 +1,8 @@
 import hashlib
 
-from models import User, Course, Class, ClassStatus  # Import models mới
+from sqlalchemy import func
+
+from TrungTamNgoaiNgu.models import User, Course, Class, ClassStatus  # Import models mới
 from TrungTamNgoaiNgu import db  # Hoặc from saleapp import db tùy cấu trúc của bạn
 
 
@@ -43,3 +45,8 @@ def add_user(name, username, password, avatar):
     db.session.add(u)
     db.session.commit()
     return u
+def count_classes_by_course():
+    # Câu lệnh SQL: SELECT c.id, c.name, COUNT(cl.id) FROM course c LEFT JOIN class cl ... GROUP BY c.id
+    return db.session.query(Course.id, Course.name, func.count(Class.id))\
+                     .join(Class, Class.course_id == Course.id, isouter=True)\
+                     .group_by(Course.id).all()

@@ -2,8 +2,9 @@ import cloudinary
 from flask import render_template, request, redirect, session, jsonify
 from flask_login import login_user, logout_user
 
-from TrungTamNgoaiNgu import app, dao, login, db, utils
+from TrungTamNgoaiNgu import app, dao, login, db, utils, admin
 from TrungTamNgoaiNgu.decoraters import anonymous_required
+from TrungTamNgoaiNgu.models import UserRole
 
 
 @app.route("/")
@@ -119,6 +120,20 @@ def add_to_cart():
 @app.route('/cart')
 def cart():
     return render_template('cart.html')
+@app.route("/login-admin", methods=["post"])
+def login_admin_process():
+    username = request.form.get("username")
+    password = request.form.get("password")
 
+    # Gọi hàm xác thực user
+    user = dao.auth_user(username, password)
+
+    # Chỉ cho phép đăng nhập nếu user tồn tại VÀ là ADMIN
+    if user and user.user_role == UserRole.ADMIN:
+        login_user(user)
+        return redirect("/admin")
+    else:
+        # Nếu sai thì quay lại trang admin nhưng báo lỗi (bạn có thể xử lý hiển thị lỗi sau)
+        return redirect("/admin")
 if __name__ == '__main__':
     app.run(debug=True)

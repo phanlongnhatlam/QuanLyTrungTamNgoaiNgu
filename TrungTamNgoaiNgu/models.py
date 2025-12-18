@@ -6,37 +6,23 @@ from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Enum, Text
 from sqlalchemy.orm import relationship
 
-# LƯU Ý: Sửa dòng này thành tên package của bạn (ví dụ: from saleapp import db, app)
-# Nếu file __init__.py nằm cùng cấp thì dùng: from __init__ import db, app
 from TrungTamNgoaiNgu import db, app
-
-
-# =========================================================
-# 1. ĐỊNH NGHĨA CÁC ENUM (TRẠNG THÁI & VAI TRÒ)
-# =========================================================
 
 class UserRole(enum.Enum):
     ADMIN = 1  # Quản trị viên
     TEACHER = 2  # Giáo viên
-    STAFF = 3  # Nhân viên (Thu ngân/Giáo vụ)
+    STAFF = 3  # Thu ngân
     STUDENT = 4  # Học viên
-
 
 class ClassStatus(enum.Enum):
     OPEN = 1  # Đang mở đăng ký
-    CLOSED = 2  # Đã chốt sổ / Đang học
+    CLOSED = 2  # Đã chốt sĩ số
     FINISHED = 3  # Đã kết thúc
-
 
 class EnrollmentStatus(enum.Enum):
     PENDING = 1  # Đã đăng ký, chờ đóng tiền
     PAID = 2  # Đã đóng tiền (Chính thức)
     CANCELLED = 3  # Đã hủy
-
-
-# =========================================================
-# 2. ĐỊNH NGHĨA CÁC BẢNG (MODELS)
-# =========================================================
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
@@ -59,26 +45,17 @@ class User(db.Model, UserMixin):
 
 
 class Course(db.Model):
-    """
-    Bảng này đóng vai trò như 'Danh mục' trên Menu.
-    VD: Tiếng Anh Giao Tiếp, Luyện thi TOEIC, Tiếng Nhật N5...
-    """
     __tablename__ = 'course'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
     description = Column(Text)
-
     # Quan hệ: Một khóa học có nhiều lớp (Sáng/Chiều/Tối)
     classes = relationship('Class', backref='course', lazy=True)
-
     def __str__(self):
         return self.name
 
 
 class Class(db.Model):
-    """
-    Đây là sản phẩm cụ thể để học viên đăng ký.
-    """
     __tablename__ = 'class'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)  # VD: TA-GT-K01
@@ -89,7 +66,7 @@ class Class(db.Model):
     image = Column(String(300),
                    default="https://res.cloudinary.com/dy1unykph/image/upload/v1741254148/aa0aawermmvttshzvjhc.png")
     status = Column(Enum(ClassStatus), default=ClassStatus.OPEN)
-
+    price = Column(Float, default=2000000)  # Mặc định 2 triệu
     # Khóa ngoại
     course_id = Column(Integer, ForeignKey(Course.id), nullable=False)
     teacher_id = Column(Integer, ForeignKey(User.id))
@@ -137,6 +114,13 @@ class Invoice(db.Model):
     enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
     staff_id = Column(Integer, ForeignKey(User.id))  # Nhân viên thu ngân nào thu tiền
 
+class Regulation(db.Model):
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(50), nullable=False, unique=True) # Tên quy định (VD: SiSoToiDa)
+    value = Column(Integer, default=0) # Giá trị (VD: 40)
+    description = Column(String(255), nullable=True) # Mô tả cho dễ hiểu
+    def __str__(self):
+        return self.name
 
 # =========================================================
 # 3. TẠO DỮ LIỆU MẪU (SEEDING DATA)

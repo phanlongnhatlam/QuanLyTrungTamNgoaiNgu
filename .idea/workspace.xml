@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a585c766-a6b1-495d-9563-c8eab570353d" name="Changes" comment="hi">
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cart.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/cart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/layout/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/layout/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/layout/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/layout/header.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/admin/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/admin/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -251,7 +249,11 @@
       <workItem from="1765884382443" duration="157000" />
       <workItem from="1765884683027" duration="1092000" />
       <workItem from="1765885883238" duration="89000" />
-      <workItem from="1765886440364" duration="1200000" />
+      <workItem from="1765886440364" duration="1416000" />
+      <workItem from="1766054884291" duration="789000" />
+      <workItem from="1766055690063" duration="67000" />
+      <workItem from="1766055771648" duration="61000" />
+      <workItem from="1766056058581" duration="1423000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <option name="closed" value="true" />
@@ -277,7 +279,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765802363643</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="hi">
+      <option name="closed" value="true" />
+      <created>1765887860413</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1765887860413</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -289,7 +299,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$app.coverage" NAME="app Coverage Results" MODIFIED="1765624173587" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1765886634556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
-    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1765798662261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766056903951" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1766055123524" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
   </component>
 </project>

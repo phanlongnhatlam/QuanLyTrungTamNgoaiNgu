@@ -1,16 +1,24 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-<h3 class="text-info text-center mt-3">CHÀO MỪNG ĐẾN VỚI TRANG QUẢN TRỊ</h3>
-{%if current_user.is_authenticated%}
-Chào {{current_user.name}}!
 
-<div class="row">
-    <div class="col-md-5 col-12">
+<div class="container mt-4">
+    <h2 class="text-center text-primary fw-bold">HỆ THỐNG QUẢN TRỊ TRUNG TÂM NGOẠI NGỮ</h2>
+    <hr>
+
+    {% if current_user.is_authenticated %}
+
+    <div class="alert alert-success">
+        Chào mừng quản trị viên: <strong>{{ current_user.name }}</strong>
     </div>
-    <div class="col-md-7 col-12">
-        <div>
+
+    <div class="row">
+        <div class="col-md-6 col-12">
+            <h5 class="text-center">Thống kê số lượng lớp học</h5>
             <canvas id="myChart"></canvas>
+        </div>
+        <div class="col-md-6 col-12">
+            <p>Các thông tin quản trị khác...</p>
         </div>
     </div>
 
@@ -19,59 +27,63 @@ Chào {{current_user.name}}!
     <script>
         const ctx = document.getElementById('myChart');
 
-        let data = [];
+        // Chuẩn bị mảng dữ liệu từ Python gửi sang
         let labels = [];
+        let data = [];
 
-        {%for c in cate_stats%}
-            labels.push('{{c[1]}}')
-            data.push({{c[2]}})
-        {%endfor%}
+        // Vòng lặp lấy dữ liệu stats (Khóa học - Số lớp)
+        {% for s in stats %}
+            labels.push('{{ s[1] }}'); // Tên khóa học
+            data.push({{ s[2] }});     // Số lượng lớp
+        {% endfor %}
 
+        // Vẽ biểu đồ tròn (Pie Chart)
         new Chart(ctx, {
-          type: 'pie',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: '# Sản phẩm',
-              data: data,
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
+            type: 'pie', // Có thể đổi thành 'bar' nếu muốn biểu đồ cột
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Số lượng lớp',
+                    data: data,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
             }
-          }
         });
     </script>
 
+    {% else %}
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>ĐĂNG NHẬP QUẢN TRỊ</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/login-admin">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Tài khoản</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
 </div>
-
-{%else%}
-{% if err_msg%}
-<div class="alert alert-danger">{{err_msg}}</div>
-
-{% endif %}
-
-<form method="post" action="/login-admin">
-    <div class="form-group mb-3 mt-3">
-        <label for="username">Tài khoản</label>
-        <input type="text" class="form-control" id="username" placeholder="Nhập tài khoản" name="username">
-
-    </div>
-
-    <div class="form-group mt-3 mb-3">
-        <label for="password">Mật khẩu</label>
-        <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu" name="password">
-
-    </div>
-
-    <div class="form-group mt-3 mb-3">
-        <button class="btn btn-primary" type="submit">ĐĂNG NHẬP</button>
-    </div>
-</form>
-{%endif%}
 
 {% endblock %}
