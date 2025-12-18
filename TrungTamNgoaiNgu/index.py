@@ -1,6 +1,6 @@
 import cloudinary
 from flask import render_template, request, redirect, session, jsonify
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user
 
 from TrungTamNgoaiNgu import app, dao, login, db, utils, admin
 from TrungTamNgoaiNgu.decoraters import anonymous_required
@@ -157,7 +157,22 @@ def cashier_view():
     # Gọi hàm trong DAO để tìm hóa đơn (nhớ import dao ở đầu file)
     invoice = dao.get_unpaid_invoice(keyword)
 
-    return render_template("cashier.html", invoice=invoice)
+    return render_template("cashier.html", receipts=invoice)
+
+
+@app.route('/api/pay', methods=['post'])
+def pay():
+    cart = session.get('cart')
+    try:
+        # Gọi hàm add_invoice trong dao
+        if dao.add_invoice(cart, current_user.id):
+            del session['cart']  # Xóa giỏ hàng sau khi lưu thành công
+            return jsonify({"status": 200, "msg": "Thanh toán thành công"})
+        else:
+            return jsonify({"status": 500, "err_msg": "Lỗi lưu Database"})
+
+    except Exception as ex:
+        return jsonify({"status": 500, "err_msg": str(ex)})
 
 if __name__ == '__main__':
     app.run(debug=True)

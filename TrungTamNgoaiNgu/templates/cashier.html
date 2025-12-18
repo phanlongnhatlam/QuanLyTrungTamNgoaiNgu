@@ -12,15 +12,13 @@
                 </div>
                 <div class="col-md-6">
                     <input type="text" name="keyword" class="form-control" 
-                           placeholder="Nhập ID (VD: 1) hoặc Tên học viên..." required>
+                           placeholder="Nhập tên học viên hoặc để trống để xem tất cả..."
+                           value="{{ request.args.get('keyword', '') }}">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-search"></i> Tìm
                     </button>
-                </div>
-                <div class="col-auto">
-                    <a href="/cashier" class="btn btn-outline-secondary">Hiện tất cả</a>
                 </div>
             </div>
         </form>
@@ -33,8 +31,7 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Mã HĐ</th>
-                        <th>Mã HV</th>
-                        <th>Tên Học Viên</th>
+                        <th>Thông tin Học viên</th>
                         <th>Số tiền cần thu</th>
                         <th>Trạng thái</th>
                         <th>Thao tác</th>
@@ -44,20 +41,23 @@
                     {% for r in receipts %}
                     <tr id="invoice-{{ r.id }}">
                         <td>#{{ r.id }}</td>
-                        <td class="fw-bold text-primary">HV-{{ r.user.id }}</td>
+
                         <td class="text-start">
-                            <b>{{ r.user.name }}</b> <br>
-                            <small class="text-muted">TK: {{ r.user.username }}</small>
+                            <b>{{ r.user.name if r.user else 'Không xác định' }}</b> <br>
+                            <small class="text-muted">ID: {{ r.user_id }}</small>
                         </td>
+
                         <td class="text-danger fw-bold text-end pe-3">
                             {{ "{:,.0f}".format(r.amount) }} VNĐ
                         </td>
+
                         <td>
                             <span class="badge bg-warning text-dark">Chưa thanh toán</span>
                         </td>
+
                         <td>
                             <button class="btn btn-success btn-sm" onclick="confirmPayment({{ r.id }})">
-                                <i class="fas fa-check-circle"></i> Thu tiền
+                                <i class="fas fa-money-bill-wave"></i> Thu tiền
                             </button>
                         </td>
                     </tr>
@@ -66,8 +66,7 @@
             </table>
             {% else %}
                 <div class="alert alert-info text-center m-0">
-                    Chưa có hóa đơn nào cần thanh toán! <br>
-                    (Hãy nhập từ khóa tìm kiếm hoặc chờ học viên đăng ký khóa học)
+                    <i class="fas fa-info-circle"></i> Không tìm thấy hóa đơn nào chưa thanh toán!
                 </div>
             {% endif %}
         </div>
@@ -76,18 +75,18 @@
 
 <script>
     function confirmPayment(invoiceId) {
-        if (confirm("Xác nhận đã thu tiền cho Hóa đơn #" + invoiceId + "?") == true) {
+        if (confirm("Xác nhận thu tiền hóa đơn #" + invoiceId + "?")) {
             fetch(`/api/pay-receipt/${invoiceId}`, {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'}
             }).then(res => res.json()).then(data => {
                 if (data.status === 200) {
-                    alert("✅ Thu tiền thành công!");
+                    alert("✅ " + data.msg);
                     document.getElementById(`invoice-${invoiceId}`).remove();
                 } else {
-                    alert("❌ Có lỗi: " + data.msg);
+                    alert("❌ Lỗi: " + data.msg);
                 }
-            }).catch(err => console.error(err));
+            }).catch(err => alert("❌ Lỗi hệ thống!"));
         }
     }
 </script>

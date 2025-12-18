@@ -40,26 +40,34 @@ def count_classes_by_course():
                      .group_by(Course.id).all()
 
 
+# FILE: dao.py
+
 def get_unpaid_invoice(keyword=None):
-    # Lấy hóa đơn chưa thanh toán (giả sử cột status=False là chưa đóng tiền)
-    # Lưu ý: Nếu bảng Receipt của bạn không có cột status, hãy kiểm tra lại models.py
+    # 1. Lấy tất cả hóa đơn chưa thanh toán
     query = Invoice.query.filter(Invoice.status == False)
 
+    # 2. [QUAN TRỌNG] Đổi .join thành .outerjoin
+    # Để nếu User bị xóa mất thì Hóa đơn vẫn hiện ra
+    query = query.outerjoin(Invoice.user)
+
     if keyword:
-        query = query.join(User)  # Kết nối bảng Receipt với User
-
-        # Xử lý tìm kiếm
+        # Logic tìm kiếm
         if keyword.isdigit():
-            # Nếu nhập số -> Tìm theo ID User
-            query = query.filter(User.id == int(keyword))
-        else:
-            # Nếu nhập chữ -> Tìm theo Tên hoặc Username
+            # Tìm theo ID Invoice HOẶC ID User
             query = query.filter(or_(
-                User.name.contains(keyword),
-                User.username.contains(keyword)
+                Invoice.id == int(keyword),
+                User.id == int(keyword)
             ))
+        else:
+            query = query.filter(User.name.contains(keyword))
 
-    return query.all()
+    # In ra màn hình console để kiểm tra xem tìm được mấy cái
+    results = query.all()
+    print(f"========================================")
+    print(f"DEBUG: Tìm thấy {len(results)} hóa đơn trong Database")
+    print(f"========================================")
+
+    return results
 
 
 # --- HÀM 2: XỬ LÝ THANH TOÁN (THU TIỀN) ---
@@ -69,4 +77,28 @@ def pay_invoice(receipt_id):
         r.status = True  # Cập nhật trạng thái thành Đã thanh toán
         db.session.commit()
         return True
+    return False
+
+
+def add_invoice(cart, user_id):
+    if cart:
+        try:
+            total_amount = 0
+            # Tính tổng tiền từ giỏ hàng
+            for c in cart.values():
+                total_amount += c['price'] * c['quantity']
+
+            # Tạo đối tượng Invoice mới
+            # Lưu ý: enrollment_id mình để mặc định là None (nullable=True)
+            # vì lúc này chỉ mới tạo hóa đơn, chưa xử lý xếp lớp
+            inv = Invoice(user_id=user_id, amount=total_amount, status=False)
+
+            db.session.add(inv)
+            db.session.commit()
+
+            print(">>> ĐÃ LƯU HÓA ĐƠN THÀNH CÔNG!")
+            return True
+        except Exception as ex:
+            print("Lỗi lưu hóa đơn:", str(ex))
+            return False
     return False
