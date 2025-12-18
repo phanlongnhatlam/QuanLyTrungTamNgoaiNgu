@@ -10,38 +10,46 @@
                     <a class="nav-link active" href="/">Trang chủ</a>
                 </li>
 
-                {%for c in courses%}
-                <li class="nav-item">
-                    <a class="nav-link" href="/?course_id={{c.id}}">{{c.name}}</a>
-                </li>
-                {%endfor%}
+                {% for c in courses %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/?course_id={{ c.id }}">{{ c.name }}</a>
+                    </li>
+                {% endfor %}
 
-                {% if current_user.is_authenticated%}
-                <li class="nav-item">
-                    <a class="nav-link active" href="#"> <img src="{{current_user.avatar}}" class="rounded-circle" width="25" height="25" style="object-fit: cover;">
-                        Chào {{current_user.name}}!
-                    </a>
-                </li> <li class="nav-item">
-                    <a class="nav-link active" href="/logout">&#10162; Đăng xuất</a>
-                </li>
-
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link active" href="/login">&#128273; Đăng nhập</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/register">&#9997; Đăng ký</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/cart">&#128722;
-                        <span class="badge bg-danger cart-counter">
-                            {{stats_cart.total_quantity}}
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"> <img src="{{ current_user.avatar }}" class="rounded-circle"
+                                                                  width="25" height="25" style="object-fit: cover;">
+                            Chào {{ current_user.name }}!
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/logout">&#10162; Đăng xuất</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/cart">&#128722;
+                            <span class="badge bg-danger cart-counter">
+                            {{ stats_cart.total_quantity }}
                         </span>
-                    </a>
-                </li>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/login">&#128273; Đăng nhập</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/register">&#9997; Đăng ký</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/cart">&#128722;
+                            <span class="badge bg-danger cart-counter">
+                            {{ stats_cart.total_quantity }}
+                        </span>
+                        </a>
+                    </li>
                 {% endif %}
 
-                </ul>
+            </ul>
 
             <form class="d-flex" method="get">
                 <input class="form-control me-2" type="text" placeholder="Tìm khóa học..." name="q">

@@ -40,22 +40,33 @@ def count_classes_by_course():
                      .group_by(Course.id).all()
 
 
-def get_unpaid_receipts(keyword=None):
-    # Lấy hóa đơn chưa thanh toán (giả sử cột status trong Receipt là False nghĩa là chưa trả)
+def get_unpaid_invoice(keyword=None):
+    # Lấy hóa đơn chưa thanh toán (giả sử cột status=False là chưa đóng tiền)
+    # Lưu ý: Nếu bảng Receipt của bạn không có cột status, hãy kiểm tra lại models.py
     query = Invoice.query.filter(Invoice.status == False)
 
     if keyword:
         query = query.join(User)  # Kết nối bảng Receipt với User
 
-        # Xử lý logic tìm kiếm thông minh
+        # Xử lý tìm kiếm
         if keyword.isdigit():
-            # Nếu từ khóa là SỐ -> Tìm theo ID User
+            # Nếu nhập số -> Tìm theo ID User
             query = query.filter(User.id == int(keyword))
         else:
-            # Nếu từ khóa là CHỮ -> Tìm theo Tên hoặc Username
+            # Nếu nhập chữ -> Tìm theo Tên hoặc Username
             query = query.filter(or_(
                 User.name.contains(keyword),
                 User.username.contains(keyword)
             ))
 
     return query.all()
+
+
+# --- HÀM 2: XỬ LÝ THANH TOÁN (THU TIỀN) ---
+def pay_invoice(receipt_id):
+    r = Invoice.query.get(receipt_id)
+    if r:
+        r.status = True  # Cập nhật trạng thái thành Đã thanh toán
+        db.session.commit()
+        return True
+    return False

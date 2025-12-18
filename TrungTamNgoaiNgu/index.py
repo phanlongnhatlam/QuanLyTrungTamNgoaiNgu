@@ -36,6 +36,18 @@ def login_my_user():
 
         if user:
             login_user(user)
+            # 1. Nếu là Admin -> Vào trang Admin
+            if user.role == UserRole.ADMIN:
+                return redirect('/admin')
+
+            # 2. Nếu là Thu ngân -> Vào trang Thu tiền
+            elif user.role == UserRole.STAFF:
+                return redirect('/cashier')
+
+            # 3. Nếu là Học viên/Giáo viên -> Về trang chủ (hoặc trang trước đó)
+            else:
+                next = request.args.get('next')
+                return redirect(next if next else "/")
             next = request.args.get('next')
             return redirect(next if next else "/")
         else:
@@ -135,5 +147,17 @@ def login_admin_process():
     else:
         # Nếu sai thì quay lại trang admin nhưng báo lỗi (bạn có thể xử lý hiển thị lỗi sau)
         return redirect("/admin")
+
+
+@app.route("/cashier")
+def cashier_view():
+    # Lấy từ khóa tìm kiếm từ ô nhập (keyword)
+    keyword = request.args.get('keyword')
+
+    # Gọi hàm trong DAO để tìm hóa đơn (nhớ import dao ở đầu file)
+    invoice = dao.get_unpaid_invoice(keyword)
+
+    return render_template("cashier.html", invoice=invoice)
+
 if __name__ == '__main__':
     app.run(debug=True)
