@@ -1,0 +1,36 @@
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã HĐ</th>
+            <th>Mã HV</th> <th>Học viên</th>
+            <th>Số tiền</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in receipts %}
+        <tr id="receipt-{{ r.id }}">
+            <td>{{ r.id }}</td>
+
+            <td class="text-center fw-bold text-primary">
+                HV-{{ r.user.id }}
+            </td>
+
+            <td>
+                <b>{{ r.user.name }}</b> <br>
+                <small class="text-muted">TK: {{ r.user.username }}</small>
+            </td>
+
+            <td class="text-danger fw-bold">
+                {{ "{:,.0f}".format(r.total if r.total else 0) }} VNĐ
+            </td>
+
+            <td>
+                <button class="btn btn-success btn-sm" onclick="confirmPayment({{ r.id }})">
+                    <i class="fas fa-check"></i> Thu tiền
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

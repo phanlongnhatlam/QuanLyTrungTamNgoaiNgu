@@ -73,15 +73,11 @@ class Class(db.Model):
 
     # Quan hệ
     enrollments = relationship('Enrollment', backref='my_class', lazy=True)
-
     def __str__(self):
         return self.name
 
 
 class Enrollment(db.Model):
-    """
-    Phiếu ghi danh (Học viên đăng ký vào 1 lớp)
-    """
     __tablename__ = 'enrollment'
     id = Column(Integer, primary_key=True, autoincrement=True)
     created_date = Column(DateTime, default=datetime.now())
@@ -122,12 +118,9 @@ class Regulation(db.Model):
     def __str__(self):
         return self.name
 
-# =========================================================
-# 3. TẠO DỮ LIỆU MẪU (SEEDING DATA)
-# =========================================================
 if __name__ == '__main__':
     with app.app_context():
-        # 1. Làm sạch và tạo lại bảng
+
         db.drop_all()  # Bỏ comment dòng này nếu muốn xóa sạch dữ liệu cũ làm lại từ đầu
         db.create_all()
 
@@ -148,7 +141,7 @@ if __name__ == '__main__':
         u_teacher_kor = User(name='Thầy Park (Hàn)', username='park', password=hashed_pw, role=UserRole.TEACHER)
         u_teacher_fra = User(name='Thầy Pierre (Pháp)', username='pierre', password=hashed_pw,
                              role=UserRole.TEACHER)
-        u_student = User(name='Học Viên Mẫu', username='student', password=hashed_pw, role=UserRole.STUDENT)
+        u_student = User(name='Học Viên', username='student', password=hashed_pw, role=UserRole.STUDENT)
 
         db.session.add_all(
             [u_admin, u_staff, u_teacher_toeic, u_teacher_ielts, u_teacher_jap, u_teacher_kor, u_teacher_fra,
@@ -169,14 +162,16 @@ if __name__ == '__main__':
         classes = [
             # ================= TIẾNG ANH (Đa dạng thể loại) =================
             # 1. Tiếng Anh Giao Tiếp
-            Class(name='[Giao Tiếp] ENG-COMM-K01', room='P.101', schedule='T2-T4-T6 (19h30)',
+            Class(name='[Giao Tiếp] ENG-COMM-K01', room='Phòng A1', schedule='T2-T4-T6 (19h30)',
                   course_id=c_eng.id, teacher_id=u_teacher_ielts.id,
-                  image="https://th.bing.com/th/id/OIP.MRnmMkq6rO3XEoT8d_nqgAHaEj?w=292&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+                  image="https://th.bing.com/th/id/OIP.MRnmMkq6rO3XEoT8d_nqgAHaEj?w=292&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1",
+                  price = 123),
 
             # 2. TOEIC 2 Kỹ Năng (Nghe - Đọc)
             Class(name='[TOEIC 2KN] Luyện Đề 550+', room='Lab 1', schedule='T3-T5-T7 (18h00)',
                   course_id=c_eng.id, teacher_id=u_teacher_toeic.id,
-                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+                  image="https://th.bing.com/th/id/OIP.2TKCk3xdftw6tNrr8VO6YQHaEK?w=284&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1",
+                  price = 456),
 
             # 3. TOEIC 4 Kỹ Năng (Nghe - Nói - Đọc - Viết)
             Class(name='[TOEIC 4KN] Toàn Diện', room='Lab 2', schedule='T7-CN (08h00 - 11h00)',

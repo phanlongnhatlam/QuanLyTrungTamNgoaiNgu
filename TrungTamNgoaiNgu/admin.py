@@ -9,7 +9,7 @@ from flask import redirect
 # 1. Class view chỉ dành cho Admin đã đăng nhập
 class AuthenticatedModelView(ModelView):
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.user_role == UserRole.ADMIN
+        return (current_user.is_authenticated and current_user.role == UserRole.ADMIN)
 
 
 # 2. Class view cho trang chủ Admin (Dashboard)

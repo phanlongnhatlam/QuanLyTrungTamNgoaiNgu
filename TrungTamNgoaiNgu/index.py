@@ -129,7 +129,7 @@ def login_admin_process():
     user = dao.auth_user(username, password)
 
     # Chỉ cho phép đăng nhập nếu user tồn tại VÀ là ADMIN
-    if user and user.user_role == UserRole.ADMIN:
+    if user and user.role == UserRole.ADMIN:
         login_user(user)
         return redirect("/admin")
     else:
