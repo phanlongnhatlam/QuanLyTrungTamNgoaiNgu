@@ -1,0 +1,96 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-3">
+        {% include 'teacher/sidebar.html' %}
+    </div>
+    <div class="col-md-9">
+        <div class="card shadow p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="text-primary">Sổ điểm: {{ clazz.name }}</h4>
+                <div>
+                    <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#addColumnModal">
+                        <i class="fas fa-plus-circle"></i> Thêm cột điểm
+                    </button>
+                    <button class="btn btn-primary" onclick="saveAllGrades()">
+                        <i class="fas fa-save"></i> LƯU BẢNG ĐIỂM
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center align-middle" id="gradeTable">
+                    <thead class="bg-light text-secondary">
+                    <tr>
+                        <th style="min-width: 200px;">Học viên</th>
+
+                        {% for col in columns %}
+                        <th class="grade-col position-relative" data-name="{{ col.name }}"
+                            data-weight="{{ col.weight }}">
+                            {{ col.name }} <br>
+                            <span class="badge bg-secondary">HS: {{ col.weight }}</span>
+                            <span class="position-absolute top-0 end-0 p-1 text-danger cursor-pointer"
+                                  style="cursor: pointer;" onclick="removeColumn(this)" title="Xóa cột này">
+                                    &times;
+                                </span>
+                        </th>
+                        {% endfor %}
+
+                        <th class="table-warning font-weight-bold">TB</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for s in students %}
+                    <tr class="student-row" data-enroll-id="{{ s.enroll_id }}">
+                        <td class="text-start">
+                            <strong>{{ s.name }}</strong> <br> <small class="text-muted">SV{{ s.id }}</small>
+                        </td>
+
+                        {% for col in columns %}
+                        <td class="grade-cell">
+                            <input type="number" class="form-control text-center score-input"
+                                   value="{{ s.scores.get(col.name, '') }}"
+                                   step="0.1" min="0" max="10" placeholder="-">
+                        </td>
+                        {% endfor %}
+
+                        <td class="fw-bold text-primary">{{ s.avg }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addColumnModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm cột điểm mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Tên đầu điểm (VD: Lab 1, Chuyên cần)</label>
+                    <input type="text" class="form-control" id="newColName">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hệ số (Trọng số)</label>
+                    <input type="number" class="form-control" id="newColWeight" value="1" min="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#addColumnModal">
+                    <i class="fas fa-plus"></i> Thêm cột điểm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/grading.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Điểm danh lớp học{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-3">
+        {% include 'teacher/sidebar.html' %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="card shadow p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="text-primary">ĐIỂM DANH: {{ clazz.name }}</h4>
+                <span class="badge bg-warning text-dark fs-6">
+                    <i class="fas fa-calendar-alt"></i> Hôm nay: 
+                    <script> document.write(new Date().toLocaleDateString('vi-VN')); </script>
+                </span>
+            </div>
+
+            <form method="post" onsubmit="return confirm('Bạn có chắc chắn muốn lưu điểm danh cho ngày hôm nay không?');">
+
+                <table class="table table-striped align-middle table-hover border">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Mã SV</th>
+                            <th>Họ và Tên</th>
+                            <th class="text-center" style="width: 150px;">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in students %}
+                        <tr>
+                            <td>SV{{ s.student_id }}</td>
+                            <td class="fw-bold">{{ s.name }}</td>
+                            <td class="text-center">
+                                <div class="form-check form-switch d-flex justify-content-center">
+                                    <input class="form-check-input" type="checkbox" style="width: 3em; height: 1.5em; cursor: pointer;"
+                                           name="att_{{ s.enroll_id }}"
+                                           {% if s.is_present != False %}checked{% endif %}>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="text-end mt-3">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save"></i> LƯU ĐIỂM DANH
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,9 +1,10 @@
 import enum
 import hashlib
 from datetime import datetime
+from xmlrpc.client import boolean
 
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Enum, Text
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Enum, Text, Boolean
 from sqlalchemy.orm import relationship
 
 # LƯU Ý: Sửa dòng này thành tên package của bạn (ví dụ: from saleapp import db, app)
@@ -118,16 +119,50 @@ class Enrollment(db.Model):
     invoice = relationship('Invoice', backref='enrollment', uselist=False, lazy=True)
 
 
-class Grade(db.Model):
-    __tablename__ = 'grade'
+class Grade(db.Model):  # Lớp Diem trong test6.png
     id = Column(Integer, primary_key=True, autoincrement=True)
-    midterm_score = Column(Float, default=0.0)
-    final_score = Column(Float, default=0.0)
-    average_score = Column(Float, default=0.0)
+    average_score = Column(Float, default=0.0)  # diemTB
+    result = Column(String(50))  # ketQua
 
-    enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
+    enrollment_id = Column(Integer, ForeignKey('enrollment.id'), nullable=False)
 
+    # Quan hệ với bảng chi tiết (Đại diện cho Map trong test6.png)
+    details = relationship('GradeDetail', backref='grade', lazy=True)
 
+    #tính điểm trung bình và
+    @property
+    def calculate_average(self):
+        if not self.details:
+            return 0.0
+
+        total_points = sum([d.score_value * d.weight for d in self.details])
+        total_weights = sum([d.weight for d in self.details])
+
+        if total_weights == 0:
+            return 0.0
+
+        return round(total_points / total_weights, 2)
+
+    @property
+    def hienthi(self):
+        # Lấy điểm trung bình đã tính ở trên
+        avg = self.calculate_average
+
+        # Quy định: >= 5.0 là Đạt (Bạn có thể sửa theo quy định trung tâm)
+        if avg >= 5.0:
+            return "Đạt"
+        return "Không đạt"
+
+    def __str__(self):
+        return f"TB: {self.calculate_average} - KQ: {self.result}"
+class GradeDetail(db.Model):
+    __tablename__ = 'grade_detail'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    score_name = Column(String(50), nullable=False)  # VD: '15p', 'Giữa kỳ'
+    score_value = Column(Float, default=0.0)
+    weight = Column(Float, default=1.0)  # Trọng số (hệ số), mặc định là 1
+
+    grade_id = Column(Integer, ForeignKey('grade.id'), nullable=False)
 class Invoice(db.Model):
     __tablename__ = 'invoice'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -137,7 +172,18 @@ class Invoice(db.Model):
     enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
     staff_id = Column(Integer, ForeignKey(User.id))  # Nhân viên thu ngân nào thu tiền
 
+# class DiemDanh
+class Attendance(db.Model):
+    __tablename__ = 'attendance'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    checkin_date = Column(DateTime, default=datetime.now())  # Ngày điểm danh
+    is_present = Column(db.Boolean, default=True)  # Có mặt hay vắng
 
+    # Liên kết với Enrollment (để biết học viên nào, lớp nào)
+    enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
+
+    def __str__(self):
+        return f"{self.checkin_date.strftime('%d/%m/%Y')} - {self.is_present}"
 # =========================================================
 # 3. TẠO DỮ LIỆU MẪU (SEEDING DATA)
 # =========================================================

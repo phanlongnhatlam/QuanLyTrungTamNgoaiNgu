@@ -1,0 +1,71 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="text-center text-danger mt-3">BÁO CÁO DOANH THU THEO KHÓA HỌC</h2>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Mã Khóa</th>
+                    <th>Tên Khóa Học</th>
+                    <th>Doanh Thu</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in stats %}
+                <tr>
+                    <td>{{ s[0] }}</td>
+                    <td>{{ s[1] }}</td>
+                    <td class="font-weight-bold text-success">
+                        {{ "{:,.0f}".format(s[2]) }} VNĐ
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <canvas id="revenueChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let labels = [];
+        let data = [];
+        
+        {% for s in stats %}
+            labels.push("{{ s[1] }}");
+            data.push({{ s[2] }});
+        {% endfor %}
+
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar', // Hoặc 'pie' nếu muốn biểu đồ tròn
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Dashboard Giáo Viên{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-3">
+        {% with clazz=None %}
+            {% include 'teacher/sidebar.html' %}
+        {% endwith %}
+    </div>
+
+    <div class="col-md-9">
+        <h3 class="text-primary border-bottom pb-2 mb-4">DANH SÁCH LỚP DẠY</h3>
+
+        {% if classes %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for c in classes %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-primary">
+                    <div class="card-header bg-primary text-white fw-bold">
+                        {{ c.name }}
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><i class="fas fa-calendar-alt text-muted"></i> Lịch: {{ c.schedule }}</p>
+                        <p class="card-text"><i class="fas fa-door-open text-muted"></i> Phòng: {{ c.room }}</p>
+                        <p class="card-text"><i class="fas fa-users text-muted"></i> Sĩ số: {{ c.max_students }}</p>
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-between">
+                        <a href="/teacher/class/{{ c.id }}/manage" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit"></i> Nhập điểm
+                        </a>
+                        
+                        <a href="/teacher/class/{{ c.id }}/attendance" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-check-square"></i> Điểm danh
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="alert alert-warning text-center">
+                Hiện tại bạn chưa được phân công dạy lớp nào!
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+<div class="list-group shadow-sm sticky-top" style="top: 20px;">
+    <a href="/teacher" class="list-group-item list-group-item-action {{ 'active' if request.path == '/teacher' }}">
+        <i class="fas fa-list me-2"></i> Danh sách lớp dạy
+    </a>
+
+    {% if clazz %}
+    <div class="list-group-item bg-light fw-bold text-muted">
+        Lớp: {{ clazz.name }}
+    </div>
+
+    <a href="/teacher/class/{{ clazz.id }}/manage" class="list-group-item list-group-item-action {{ 'active' if 'manage' in request.path }}">
+        <i class="fas fa-edit me-2"></i> Nhập điểm
+    </a>
+
+    <a href="/teacher/class/{{ clazz.id }}/attendance" class="list-group-item list-group-item-action {{ 'active' if 'attendance' in request.path }}">
+        <i class="fas fa-check-square me-2"></i> Điểm danh
+    </a>
+    {% endif %}
+</div>
