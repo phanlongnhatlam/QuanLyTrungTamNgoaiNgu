@@ -1,71 +1,166 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="text-center text-danger mt-3">BÁO CÁO DOANH THU THEO KHÓA HỌC</h2>
-    </div>
-</div>
+<div class="container-fluid mb-5">
+    <h2 class="text-center text-danger font-weight-bold mb-4 mt-2">DASHBOARD QUẢN TRỊ</h2>
 
-<div class="row mt-4">
-    <div class="col-md-6">
-        <table class="table table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Mã Khóa</th>
-                    <th>Tên Khóa Học</th>
-                    <th>Doanh Thu</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in stats %}
-                <tr>
-                    <td>{{ s[0] }}</td>
-                    <td>{{ s[1] }}</td>
-                    <td class="font-weight-bold text-success">
-                        {{ "{:,.0f}".format(s[2]) }} VNĐ
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="row">
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-table mr-2"></i>Chi tiết Doanh thu</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mb-0">
+                            <thead class="bg-light text-dark">
+                                <tr><th>Khóa Học</th><th>Doanh Thu</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for s in stats_revenue %}
+                                <tr>
+                                    <td>{{ s[1] }}</td>
+                                    <td class="text-success font-weight-bold">{{ "{:,.0f}".format(s[2]) }} VNĐ</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-chart-bar mr-2"></i>Biểu đồ Doanh thu</h6>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="col-md-6">
-        <canvas id="revenueChart"></canvas>
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-info text-white">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-users mr-2"></i>Tỷ trọng Học viên</h6>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="studentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-success text-white">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-graduation-cap mr-2"></i>Tỷ lệ Đậu/Rớt</h6>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px;">
+                        <canvas id="qualityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-warning text-dark">
+                    <h6 class="m-0 font-weight-bold"><i class="fas fa-chart-line mr-2"></i>Xu hướng Doanh thu (2025)</h6>
+                </div>
+                <div class="card-body">
+                    <div style="height: 350px;">
+                        <canvas id="monthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let labels = [];
-        let data = [];
-        
-        {% for s in stats %}
-            labels.push("{{ s[1] }}");
-            data.push({{ s[2] }});
-        {% endfor %}
+document.addEventListener("DOMContentLoaded", function() {
 
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar', // Hoặc 'pie' nếu muốn biểu đồ tròn
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Doanh thu (VNĐ)',
-                    data: data,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
+    // Cấu hình chung: maintainAspectRatio = false để biểu đồ tự co theo div cha
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+    };
+
+    // 1. DOANH THU
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: [{% for s in stats_revenue %} "{{ s[1] }}", {% endfor %}],
+            datasets: [{
+                label: 'Doanh thu',
+                data: [{% for s in stats_revenue %} {{ s[2] }}, {% endfor %}],
+                backgroundColor: '#4e73df',
+                barPercentage: 0.5 // Làm cột nhỏ lại cho thanh thoát
+            }]
+        },
+        options: commonOptions
     });
+
+    // 2. HỌC VIÊN (Pie Chart)
+    new Chart(document.getElementById('studentChart'), {
+        type: 'doughnut', // Dạng bánh quy rỗng giữa nhìn sang hơn Pie thường
+        data: {
+            labels: [{% for s in stats_student %} "{{ s[1] }}", {% endfor %}],
+            datasets: [{
+                data: [{% for s in stats_student %} {{ s[2] }}, {% endfor %}],
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+            }]
+        },
+        options: commonOptions
+    });
+
+    // 3. ĐẬU/RỚT (Stacked Bar)
+    new Chart(document.getElementById('qualityChart'), {
+        type: 'bar',
+        data: {
+            labels: [{% for s in stats_quality %} "{{ s[1] }}", {% endfor %}],
+            datasets: [
+                { label: 'Đậu', data: [{% for s in stats_quality %} {{ s[2] }}, {% endfor %}], backgroundColor: '#1cc88a' },
+                { label: 'Rớt', data: [{% for s in stats_quality %} {{ s[3] }}, {% endfor %}], backgroundColor: '#e74a3b' }
+            ]
+        },
+        options: {
+            ...commonOptions,
+            scales: { x: { stacked: true }, y: { stacked: true } }
+        }
+    });
+
+    // 4. XU HƯỚNG THÁNG (Line Chart)
+    let monthData = new Array(12).fill(0);
+    {% for s in stats_month %} monthData[{{ s[0] }} - 1] = {{ s[1] }}; {% endfor %}
+
+    new Chart(document.getElementById('monthChart'), {
+        type: 'line',
+        data: {
+            labels: ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"],
+            datasets: [{
+                label: 'Doanh thu',
+                data: monthData,
+                borderColor: '#f6c23e',
+                backgroundColor: 'rgba(246, 194, 62, 0.1)',
+                fill: true,
+                tension: 0.4 // Độ cong mềm mại
+            }]
+        },
+        options: commonOptions
+    });
+});
 </script>
 {% endblock %}

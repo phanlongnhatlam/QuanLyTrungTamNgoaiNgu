@@ -14,6 +14,10 @@ def index():
     if current_user.is_authenticated and current_user.role == UserRole.TEACHER:
         return redirect("/teacher")
 
+    #khi chạy lại server thì sẽ không bị vào trang index.html
+    if current_user.is_authenticated and current_user.role == UserRole.ADMIN:
+        return redirect("/admin")
+
     q = request.args.get('q')
     course_id = request.args.get('id')
     course_id = request.args.get('course_id')

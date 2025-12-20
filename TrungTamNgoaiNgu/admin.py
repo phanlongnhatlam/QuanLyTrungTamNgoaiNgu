@@ -16,29 +16,48 @@ class AuthenticatedModelView(ModelView):
         # Nếu không phải Admin thì đá về trang chủ
         return redirect('/')
 
+
 # 3. Class Logout (Đăng xuất ngay trong Admin)
 class LogoutView(BaseView):
     @expose('/')
     def index(self):
         logout_user()
-        return redirect('/admin')
+        return redirect('/')
 
     def is_accessible(self):
         return current_user.is_authenticated
 
+
 class MyHomeView(AdminIndexView):
     @expose('/')
     def index(self):
-        # Lấy số liệu thống kê để hiện ngay trang chủ
-        stats = dao.stats_revenue()
-        return self.render('admin/stats.html', stats=stats) # Dùng luôn giao diện stats
+        # 1. Doanh thu theo khóa (Code cũ - Giữ nguyên)
+        stats_revenue = dao.stats_revenue()
+
+        # 2. Số lượng học viên (MỚI)
+        stats_student = dao.stats_student_count_by_course()
+
+        # 3. Tỷ lệ Đậu/Rớt (MỚI)
+        stats_quality = dao.stats_pass_rate_by_course()
+
+        # 4. Doanh thu theo tháng (MỚI)
+        stats_month = dao.stats_revenue_by_month(year=2025)
+
+        # Gửi tất cả sang giao diện
+        return self.render('admin/stats.html',
+                           stats_revenue=stats_revenue,
+                           stats_student=stats_student,
+                           stats_quality=stats_quality,
+                           stats_month=stats_month)
 
     def is_accessible(self):
         return current_user.is_authenticated and current_user.role == UserRole.ADMIN
 
+
 # --- KHỞI TẠO ADMIN ---
 # (Theo slide trang 76) [cite: 1182]
-admin = Admin(app, name="Quản trị trung tâm",index_view=MyHomeView())# không chạy đc bootstrap3 hay 4 do flask admin quá cũ
+admin = Admin(app, name="Quản trị trung tâm",
+              index_view=MyHomeView())  # không chạy đc bootstrap3 hay 4 do flask admin quá cũ
 # Thêm các trang quản lý dữ liệu (CRUD)
 admin.add_view(AuthenticatedModelView(User, db.session, name="Người dùng"))
 admin.add_view(AuthenticatedModelView(Course, db.session, name="Khóa học"))
@@ -46,7 +65,7 @@ admin.add_view(AuthenticatedModelView(Class, db.session, name="Lớp học"))
 admin.add_view(AuthenticatedModelView(Enrollment, db.session, name="Ghi danh"))
 
 # Thêm trang Thống kê & Đăng xuất
-admin.add_view(LogoutView(name='Đăng xuất'))
+admin.add_view(LogoutView(name='Đăng xuất', endpoint='logout'))  #
 
 # #Câu lệnh tạo dữ liệu giả trong mysql để test
 # #-- 1. Đảm bảo đã có Khóa học Tiếng Anh (ID=1) và Tiếng Nhật (ID=2)
