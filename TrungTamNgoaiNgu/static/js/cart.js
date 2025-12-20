@@ -63,16 +63,49 @@ function deleteCart(id){
     }
 }
 
-function pay(){
-if(confirm("Co chac chan thanh toan?")===true){
-        fetch('api/pay', {
+// 1. Phải truyền tham số enrollId vào hàm
+function pay(enrollId) {
+    if (confirm("Có chắc chắn thanh toán không?") === true) {
+
+        fetch('/api/pay', { // Thêm dấu / ở đầu để chắc chắn đúng đường dẫn
             method: 'post',
+
+            // 2. QUAN TRỌNG: Phải khai báo header để Server biết đây là JSON
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            // 3. QUAN TRỌNG: Phải đóng gói cái ID gửi đi
+            body: JSON.stringify({
+                "enroll_id": enrollId
+            })
+
         }).then(res => res.json()).then(data => {
-            if(data.status===200){
+            if (data.status === 200) {
+                alert(data.msg); // Thông báo thành công
                 location.reload();
-            }else{
-                alert(data.err_msg)
+            } else {
+                // In ra lỗi nếu có (data.msg hoặc data.err_msg tùy code python trả về)
+                alert(data.msg || data.err_msg);
             }
-        })
+        }).catch(err => {
+            console.error(err); // In lỗi ra console nếu mất mạng hoặc lỗi code
+        });
     }
+}
+function checkout() {
+    if (!confirm("Xác nhận đăng ký các lớp này?")) return;
+
+    // Gọi vào route checkout
+    fetch('/api/checkout', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    }).then(res => res.json()).then(data => {
+        if (data.status === 200) {
+            alert(data.msg);
+            location.reload();
+        } else {
+            alert(data.msg);
+        }
+    });
 }

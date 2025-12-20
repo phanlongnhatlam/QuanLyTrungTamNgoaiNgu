@@ -1,0 +1,89 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Thu Ngân - Thanh Toán{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center text-primary mb-4">DANH SÁCH HỌC PHÍ CẦN THU</h1>
+
+    <form class="d-flex mb-4">
+        <input class="form-control me-2" name="keyword" type="search" placeholder="Nhập tên học viên hoặc Mã phiếu..." aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
+    </form>
+
+    <div class="alert alert-warning">
+        DEBUG RAW DATA: {{ enrollments }}
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table table-hover table-bordered align-middle text-center">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>Mã Phiếu</th>
+                        <th>Học Viên</th>
+                        <th>Lớp Đăng Ký</th>
+                        <th>Học Phí</th>
+                        <th>Ngày Đăng Ký</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if enrollments %}
+                        {% for e in enrollments %}
+                        <tr>
+                            <td class="fw-bold">#{{ e.id }}</td>
+
+                            <td class="text-start fw-bold text-primary">{{ e.student.name }}</td>
+
+                            <td>{{ e.my_class.name }}</td>
+
+                            <td class="text-danger fw-bold">
+                                {{ "{:,.0f}".format(e.my_class.price) }} VNĐ
+                            </td>
+
+                            <td>{{ e.created_date.strftime('%d/%m/%Y %H:%M') }}</td>
+
+                            <td>
+                                <button class="btn btn-success btn-sm px-3" onclick="pay({{ e.id }})">
+                                    <i class="fas fa-money-bill-wave"></i> Thu Tiền
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-muted py-4">
+                                <i>Không tìm thấy phiếu ghi danh nào chưa thanh toán!</i>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function pay(enrollId) {
+    if(confirm("Xác nhận đã thu tiền cho phiếu #" + enrollId + "?") === true){
+        fetch('/api/pay', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "enroll_id": enrollId
+            })
+        }).then(res => res.json()).then(data => {
+            if(data.status === 200){
+                alert(data.msg);
+                location.reload();
+            } else {
+                alert("Lỗi: " + data.msg)
+            }
+        }).catch(err => console.error(err));
+    }
+}
+</script>
+{% endblock %}

@@ -1,34 +1,45 @@
 import cloudinary
 from flask import render_template, request, redirect, session, jsonify
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 
 from TrungTamNgoaiNgu import app, dao, login, db, utils, admin
 from TrungTamNgoaiNgu.decoraters import anonymous_required
-from TrungTamNgoaiNgu.models import UserRole
+from TrungTamNgoaiNgu.models import UserRole, Class
 
+
+# =========================================================
+# 1. TRANG CHỦ & ĐĂNG NHẬP/ĐĂNG KÝ
+# =========================================================
 
 @app.route("/")
 def index():
     q = request.args.get('q')
-    course_id = request.args.get('id')
-    course_id = request.args.get('course_id')
-    classes = dao.load_classes(course_id=course_id,kw=q)
-    # pages = math.ceil(dao.count_product() / app.config["PAGE_SIZE"])
+    course_id = request.args.get('course_id')  # Lấy đúng biến course_id
+
+    # Load danh sách lớp học (có lọc theo khóa hoặc tìm kiếm)
+    classes = dao.load_classes(course_id=course_id, kw=q)
+
     return render_template("index.html", classes=classes)
+
+
 @login.user_loader
 def load_user(user_id):
     return dao.get_user_by_id(user_id)
+
+
 @app.context_processor
 def common_attribute():
     return {
         'courses': dao.load_courses(),
         'stats_cart': utils.count_cart(session.get('cart'))
     }
+
+
 @app.route("/login", methods=["get", "post"])
 @anonymous_required
 def login_my_user():
     err_msg = None
-    if request.method.__eq__("POST"):
+    if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
 
@@ -36,36 +47,38 @@ def login_my_user():
 
         if user:
             login_user(user)
-            # 1. Nếu là Admin -> Vào trang Admin
+
+            # --- ĐIỀU HƯỚNG THEO VAI TRÒ ---
             if user.role == UserRole.ADMIN:
                 return redirect('/admin')
-
-            # 2. Nếu là Thu ngân -> Vào trang Thu tiền
             elif user.role == UserRole.STAFF:
                 return redirect('/cashier')
-
-            # 3. Nếu là Học viên/Giáo viên -> Về trang chủ (hoặc trang trước đó)
+            elif user.role == UserRole.TEACHER:
+                return redirect('/teacher')
             else:
-                next = request.args.get('next')
-                return redirect(next if next else "/")
-            next = request.args.get('next')
-            return redirect(next if next else "/")
+                # Học viên hoặc người thường
+                next_page = request.args.get('next')
+                return redirect(next_page if next_page else "/")
         else:
             err_msg = "Tài khoản hoặc mật khẩu không đúng!"
 
     return render_template("login.html", err_msg=err_msg)
+
+
 @app.route("/logout")
 def logout_my_user():
     logout_user()
     return redirect('/login')
+
+
 @app.route("/register", methods=['get', 'post'])
 def register():
     err_msg = None
-    if request.method.__eq__("POST"):
+    if request.method == "POST":
         password = request.form.get("password")
         confirm = request.form.get("confirm")
 
-        if password.__eq__(confirm):
+        if password == confirm:
             name = request.form.get('name')
             username = request.form.get("username")
             avatar = request.files.get('avatar')
@@ -78,42 +91,45 @@ def register():
             try:
                 dao.add_user(name, username, password, avatar=file_path)
                 return redirect('/login')
-            except:
+            except Exception as ex:
                 db.session.rollback()
-                err_msg = "Hệ thống đang bị lỗi! Vui lòng quay lại sau!"
+                err_msg = f"Lỗi hệ thống: {str(ex)}"
         else:
             err_msg = "Mật khẩu không khớp!"
 
     return render_template("register.html", err_msg=err_msg)
-@app.route("/api/carts/<id>", methods=['put'])
-def update_cart(id):
-    cart = session.get('cart')
 
-    if cart and  id in cart:
-        cart[id]["quantity"] = int(request.json.get("quantity"))
-        session['cart'] = cart
 
-    return jsonify(utils.count_cart(cart=cart))
+@app.route("/login-admin", methods=["post"])
+def login_admin_process():
+    username = request.form.get("username")
+    password = request.form.get("password")
+    user = dao.auth_user(username, password)
 
-@app.route("/api/carts/<id>", methods=['delete'])
-def delete_cart(id):
-    cart = session.get('cart')
+    if user and user.role == UserRole.ADMIN:
+        login_user(user)
+        return redirect("/admin")
+    else:
+        return redirect("/admin")
 
-    if cart and id in cart:
-        del cart[id]
-        session['cart'] = cart
 
-    return jsonify(utils.count_cart(cart=cart))
+# =========================================================
+# 2. XỬ LÝ GIỎ HÀNG (API CART)
+# =========================================================
+
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
 
 @app.route("/api/carts", methods=['post'])
 def add_to_cart():
+    # Thêm sản phẩm vào giỏ
     cart = session.get('cart')
-
     if not cart:
         cart = {}
 
     id = str(request.json.get('id'))
-
     if id in cart:
         cart[id]["quantity"] += 1
     else:
@@ -125,54 +141,143 @@ def add_to_cart():
         }
 
     session['cart'] = cart
-
-    print(session['cart'])
-
     return jsonify(utils.count_cart(cart=cart))
-@app.route('/cart')
-def cart():
-    return render_template('cart.html')
-@app.route("/login-admin", methods=["post"])
-def login_admin_process():
-    username = request.form.get("username")
-    password = request.form.get("password")
 
-    # Gọi hàm xác thực user
-    user = dao.auth_user(username, password)
 
-    # Chỉ cho phép đăng nhập nếu user tồn tại VÀ là ADMIN
-    if user and user.role == UserRole.ADMIN:
-        login_user(user)
-        return redirect("/admin")
-    else:
-        # Nếu sai thì quay lại trang admin nhưng báo lỗi (bạn có thể xử lý hiển thị lỗi sau)
-        return redirect("/admin")
+@app.route("/api/carts/<id>", methods=['put'])
+def update_cart(id):
+    # Cập nhật số lượng
+    cart = session.get('cart')
+    if cart and id in cart:
+        cart[id]["quantity"] = int(request.json.get("quantity"))
+        session['cart'] = cart
+    return jsonify(utils.count_cart(cart=cart))
+
+
+@app.route("/api/carts/<id>", methods=['delete'])
+def delete_cart(id):
+    # Xóa món khỏi giỏ
+    cart = session.get('cart')
+    if cart and id in cart:
+        del cart[id]
+        session['cart'] = cart
+    return jsonify(utils.count_cart(cart=cart))
+
+
+# =========================================================
+# 3. CHECKOUT & THANH TOÁN (QUAN TRỌNG)
+# =========================================================
+
+@app.route("/api/checkout", methods=['post'])
+@login_required
+def checkout():
+    """
+    DÀNH CHO HỌC VIÊN: Bấm 'Đăng ký' từ giỏ hàng.
+    Chuyển Giỏ hàng -> Enrollment (Trạng thái Pending)
+    """
+    cart = session.get('cart')
+    if not cart:
+        return jsonify({'status': 400, 'msg': 'Giỏ hàng rỗng!'})
+
+    if dao.save_cart_to_db(cart, current_user.id):
+        del session['cart']  # Xóa giỏ hàng sau khi đăng ký xong
+        return jsonify({'status': 200, 'msg': 'Đăng ký thành công! Vui lòng đến quầy để đóng tiền.'})
+
+    return jsonify({'status': 500, 'msg': 'Lỗi khi lưu đơn hàng.'})
 
 
 @app.route("/cashier")
-def cashier_view():
-    # Lấy từ khóa tìm kiếm từ ô nhập (keyword)
-    keyword = request.args.get('keyword')
+@login_required
+def cashier_index():
+    """
+    DÀNH CHO THU NGÂN: Trang liệt kê danh sách nợ học phí
+    """
+    if current_user.role != UserRole.STAFF and current_user.role != UserRole.ADMIN:
+        return redirect("/")
 
-    # Gọi hàm trong DAO để tìm hóa đơn (nhớ import dao ở đầu file)
-    invoice = dao.get_unpaid_invoice(keyword)
+    kw = request.args.get("keyword")
+    # Lấy danh sách phiếu ghi danh chưa đóng tiền
+    enrollments = dao.get_unpaid_enrollments(kw)
 
-    return render_template("cashier.html", receipts=invoice)
+    # Lưu ý: Sửa lại đường dẫn template cho đúng thư mục của bạn
+    return render_template("cashier/index.html", enrollments=enrollments)
 
 
 @app.route('/api/pay', methods=['post'])
+@login_required
 def pay():
-    cart = session.get('cart')
-    try:
-        # Gọi hàm add_invoice trong dao
-        if dao.add_invoice(cart, current_user.id):
-            del session['cart']  # Xóa giỏ hàng sau khi lưu thành công
-            return jsonify({"status": 200, "msg": "Thanh toán thành công"})
-        else:
-            return jsonify({"status": 500, "err_msg": "Lỗi lưu Database"})
+    """
+    DÀNH CHO THU NGÂN: Xử lý nút 'Thanh toán'
+    Nhận vào enroll_id -> Chuyển trạng thái Paid -> Xuất hóa đơn
+    """
+    data = request.json
+    enroll_id = data.get('enroll_id')
 
+    if not enroll_id:
+        return jsonify({'status': 400, 'msg': 'Thiếu mã phiếu ghi danh!'})
+
+    # Gọi hàm thanh toán trong DAO
+    if dao.pay_enrollment(enroll_id, current_user.id):
+        return jsonify({"status": 200, "msg": "Thanh toán thành công"})
+
+    return jsonify({"status": 500, "msg": "Lỗi hệ thống hoặc phiếu không hợp lệ"})
+
+
+# =========================================================
+# 4. CHỨC NĂNG GIÁO VIÊN (TEACHER)
+# =========================================================
+
+@app.route("/teacher")
+@login_required
+def teacher_index():
+    if current_user.role != UserRole.TEACHER: return redirect("/")
+
+    classes = Class.query.filter_by(teacher_id=current_user.id).all()
+    return render_template('teacher/index.html', classes=classes)
+
+
+@app.route("/teacher/class/<int:class_id>/manage")
+@login_required
+def manage_class(class_id):
+    if current_user.role != UserRole.TEACHER: return "Access Denied", 403
+
+    c = dao.get_class_by_id(class_id)
+    students = dao.get_students_with_grades(class_id)
+    dynamic_columns = dao.get_class_columns(class_id)
+
+    return render_template('teacher/class_management.html', clazz=c, students=students, columns=dynamic_columns)
+
+
+@app.route("/teacher/class/<int:class_id>/attendance", methods=['get', 'post'])
+@login_required
+def attendance(class_id):
+    if current_user.role != UserRole.TEACHER: return redirect("/")
+
+    if request.method == 'POST':
+        students = dao.get_students_by_class(class_id)
+        for s in students:
+            # Checkbox: nếu tích thì value="on", ko tích thì None
+            is_present = (request.form.get(f"att_{s.enroll_id}") == "on")
+            dao.save_daily_attendance(s.enroll_id, is_present)
+        return redirect(f"/teacher/class/{class_id}/attendance")
+
+    return render_template('teacher/attendance.html',
+                           clazz=dao.get_class_by_id(class_id),
+                           students=dao.get_attendance_today(class_id))
+
+
+@app.route("/api/save-grades", methods=['post'])
+@login_required
+def save_grades():
+    if current_user.role != UserRole.TEACHER: return jsonify({"status": 403})
+    try:
+        data = request.json
+        for item in data:
+            dao.save_grade_with_details(item['enroll_id'], item['scores'])
+        return jsonify({"status": 200})
     except Exception as ex:
         return jsonify({"status": 500, "err_msg": str(ex)})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

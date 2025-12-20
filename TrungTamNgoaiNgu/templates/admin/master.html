@@ -1,0 +1,73 @@
+{% extends 'admin/base.html' %}
+
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block page_body %}
+<div class="d-flex" id="wrapper">
+    <div class="bg-white border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">QUẢN LÝ TRUNG TÂM</div>
+        <div class="list-group list-group-flush">
+            <a href="{{ admin_view.admin.url }}"
+               class="list-group-item list-group-item-action bg-white {% if request.endpoint == 'admin.index' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt mr-2"></i>Tổng quan
+            </a>
+            {% for item in admin_view.admin.menu() %}
+            {% if item.is_category() %}
+            {% elif item.is_accessible() and item.url != admin_view.admin.url %}
+            {% if item.name != 'Đăng xuất' and item.name != 'Home' %}
+            <a href="{{ item.get_url() }}"
+               class="list-group-item list-group-item-action bg-white {% if item.is_active(admin_view) %}active{% endif %}">
+                {% if item.name == 'Người dùng' %}<i class="fas fa-user mr-2"></i>
+                {% elif item.name == 'Khóa học' %}<i class="fas fa-book mr-2"></i>
+                {% elif item.name == 'Lớp học' %}<i class="fas fa-chalkboard-teacher mr-2"></i>
+                {% elif item.name == 'Ghi danh' %}<i class="fas fa-clipboard-list mr-2"></i>
+                {% else %}<i class="far fa-circle mr-2"></i>{% endif %}
+                Quản lý {{ item.name }}
+            </a>
+            {% endif %} {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="page-content-wrapper">
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top">
+            <button class="btn btn-link d-md-none rounded-circle mr-3" id="menuToggle"><i class="fa fa-bars"></i>
+            </button>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">Xin chào, <b>{{ current_user.name }}</b></span>
+                        <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60"
+                             style="width: 30px; height: 30px;">
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                         aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="/admin/logout"> <i
+                                class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                            Đăng xuất
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="container-fluid">
+            {% block body %}{% endblock %}
+        </div>
+
+        {% include 'layout/footer.html' %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block tail %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
