@@ -2,25 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a585c766-a6b1-495d-9563-c8eab570353d" name="Changes" comment="hi">
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/css/admin.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/admin.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/grading.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/admin/master.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/admin/stats.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/teacher/attendance.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/teacher/class_management.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/teacher/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/teacher/sidebar.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/cart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/admin/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cart.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cashier.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cashier/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,9 +14,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Flask Main" />
-        <option value="Python Script" />
-        <option value="CSS File" />
         <option value="JavaScript File" />
+        <option value="Python Script" />
         <option value="HTML File" />
       </list>
     </option>
@@ -78,27 +60,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.app.executor": "Run",
-    "Python.index.executor": "Run",
-    "Python.models (1).executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
-    "list.type.of.created.stylesheet": "CSS",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.index.executor&quot;: &quot;Run&quot;,
+    &quot;Python.models (1).executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\QuanLyTrungTamNgoaiNgu\TrungTamNgoaiNgu\templates\cashier" />
       <recent name="D:\QuanLyTrungTamNgoaiNgu\TrungTamNgoaiNgu\templates" />
       <recent name="D:\QuanLyTrungTamNgoaiNgu\TrungTamNgoaiNgu\templates\layout" />
       <recent name="D:\QuanLyTrungTamNgoaiNgu\TrungTamNgoaiNgu" />
@@ -351,7 +331,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/TrungTamNgoaiNgu/models.py</url>
-          <line>149</line>
+          <line>150</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
@@ -359,7 +339,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$app.coverage" NAME="app Coverage Results" MODIFIED="1765624173587" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766235097752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
-    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1766235720767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766135739715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1766062233478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
   </component>
 </project>
