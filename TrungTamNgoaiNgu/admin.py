@@ -18,29 +18,47 @@ class AuthenticatedModelView(ModelView):
 
 # --- XỬ LÝ LỚP HỌC (Cho phép sửa giá) ---
 class ClassModelView(AuthenticatedModelView):
-    # Hiển thị cột giá tiền (price)
-    column_list = ('name', 'level', 'price', 'course', 'teacher', 'room')
+    # 1. Thêm 'max_students' vào danh sách hiển thị
+    column_list = ('name', 'level', 'price', 'max_students', 'course', 'teacher', 'room')
 
-    # Form nhập liệu
+    # 2. Form nhập liệu (Giữ nguyên)
     form_columns = ('name', 'level', 'price', 'course', 'teacher', 'room', 'schedule',
                     'max_students', 'start_date', 'image', 'status')
 
+    # 3. Việt hóa tên cột cho đẹp (Mới thêm)
+    column_labels = {
+        'name': 'Tên lớp',
+        'level': 'Cấp độ',
+        'price': 'Học phí',
+        'max_students': 'Sĩ số',
+        'course': 'Thuộc khóa',
+        'teacher': 'Giáo viên',
+        'room': 'Phòng',
+        'schedule': 'Lịch học',
+        'start_date': 'Ngày khai giảng',
+        'image': 'Ảnh',
+        'status': 'Trạng thái'
+    }
+
+    # 4. Logic tự động cập nhật giá (Giữ nguyên code cũ của bạn)
     def on_model_change(self, form, model, is_created):
-        # SỬA LẠI: Bỏ điều kiện 'is_created'.
-        # Logic: Chỉ cần ô Price đang TRỐNG (người dùng không nhập hoặc xóa đi),
-        # hệ thống sẽ tự đi tìm Quy định để điền vào.
+        # Nếu không nhập giá -> Tự lấy theo quy định
         if not model.price:
             reg_name = 'FEE_BEGINNER'
-
             if model.level == ClassLevel.INTERMEDIATE:
                 reg_name = 'FEE_INTERMEDIATE'
             elif model.level == ClassLevel.ADVANCED:
                 reg_name = 'FEE_ADVANCED'
 
-            # Tìm giá trong bảng Regulation
             r = Regulation.query.filter(Regulation.name == reg_name).first()
             if r:
                 model.price = r.value
+
+        # Nếu không nhập sĩ số -> Tự lấy theo quy định MAX_STUDENTS
+        if not model.max_students:
+            r_max = Regulation.query.filter(Regulation.name == 'MAX_STUDENTS').first()
+            if r_max:
+                model.max_students = int(r_max.value)
 
         return super().on_model_change(form, model, is_created)
 
@@ -71,7 +89,7 @@ class RegulationModelView(AuthenticatedModelView):
     }
 
     def after_model_change(self, form, model, is_created):
-        # 1. Ánh xạ từ Tên quy định sang Level tương ứng
+        # 1. LOGIC CẬP NHẬT HỌC PHÍ (GIỮ NGUYÊN)
         level_to_update = None
         if model.name == 'FEE_BEGINNER':
             level_to_update = ClassLevel.BEGINNER
@@ -80,23 +98,35 @@ class RegulationModelView(AuthenticatedModelView):
         elif model.name == 'FEE_ADVANCED':
             level_to_update = ClassLevel.ADVANCED
 
-        # 2. Nếu phát hiện đang sửa giá tiền -> Cập nhật các lớp
         if level_to_update:
             try:
-                # Tìm tất cả các lớp có Level tương ứng
                 classes = Class.query.filter(Class.level == level_to_update).all()
-
-                count = 0
                 for c in classes:
-                    c.price = model.value  # Gán giá mới của quy định cho lớp
-                    count += 1
-
+                    c.price = model.value
                 db.session.commit()
-                print(f"✅ ĐÃ CẬP NHẬT GIÁ {model.value} CHO {count} LỚP {level_to_update.name}")
-
             except Exception as e:
                 db.session.rollback()
-                print(f"❌ Lỗi cập nhật giá: {str(e)}")
+                print(f"Lỗi cập nhật giá: {str(e)}")
+
+        # 2. LOGIC MỚI: CẬP NHẬT SĨ SỐ (MAX_STUDENTS)
+        if model.name == 'MAX_STUDENTS':
+            try:
+                # Lấy tất cả các lớp học
+                all_classes = Class.query.all()
+
+                # Ép kiểu int vì sĩ số phải là số nguyên (Regulation.value là Float)
+                new_max = int(model.value)
+
+                for c in all_classes:
+                    c.max_students = new_max
+
+                db.session.commit()
+                print(f"✅ ĐÃ CẬP NHẬT SĨ SỐ {new_max} CHO TOÀN BỘ LỚP HỌC")
+            except Exception as e:
+                db.session.rollback()
+                print(f"❌ Lỗi cập nhật sĩ số: {str(e)}")
+
+        return super().after_model_change(form, model, is_created)
 
         return super().after_model_change(form, model, is_created)
 

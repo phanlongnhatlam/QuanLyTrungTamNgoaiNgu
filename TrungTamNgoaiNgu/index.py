@@ -1,12 +1,12 @@
 import math
 
 import cloudinary
-from flask import render_template, request, redirect, session, jsonify
+from flask import render_template, request, redirect, session, jsonify, flash
 from flask_login import login_user, logout_user, current_user, login_required
 
 from TrungTamNgoaiNgu import app, dao, login, db, utils, admin
 from TrungTamNgoaiNgu.decoraters import anonymous_required
-from TrungTamNgoaiNgu.models import UserRole, Class
+from TrungTamNgoaiNgu.models import UserRole, Class, Enrollment
 
 
 # =========================================================
@@ -314,6 +314,46 @@ def class_details(class_id):
     # Gọi hàm lấy lớp học theo ID (đã có trong dao.py)
     c = dao.get_class_by_id(class_id)
     return render_template('classes_details.html', prod=c)
+
+@app.route('/register-class/<int:class_id>', methods=['POST'])
+@login_required  # Bắt buộc phải đăng nhập mới được đăng ký
+def register_class(class_id):
+    # 1. Lấy thông tin lớp học
+    my_class = Class.query.get(class_id)
+
+    if not my_class:
+        flash('Lớp học không tồn tại!', 'danger')
+        return redirect('/')
+
+    # 2. KIỂM TRA SĨ SỐ (QUAN TRỌNG)
+    # Đếm số học viên hiện tại
+    current_count = len(my_class.enrollments)
+
+    # So sánh với sĩ số tối đa (max_students)
+    if current_count >= my_class.max_students:
+        flash('Rất tiếc, lớp này đã ĐỦ SĨ SỐ (Hết slot)!', 'danger')
+        return redirect('/')  # Quay lại trang chủ hoặc trang danh sách
+
+    # 3. Kiểm tra xem user này đã đăng ký lớp này chưa (Tránh đăng ký đúp)
+    existing_enroll = Enrollment.query.filter_by(student_id=current_user.id, class_id=class_id).first()
+    if existing_enroll:
+        flash('Bạn đã đăng ký lớp này rồi, không cần đăng ký lại.', 'warning')
+        return redirect('/')
+
+    # 4. NẾU MỌI THỨ OK -> TẠO ĐĂNG KÝ MỚI
+    try:
+        new_enrollment = Enrollment(student_id=current_user.id, class_id=class_id)
+        db.session.add(new_enrollment)
+        db.session.commit()
+
+        # Thông báo thành công
+        flash(f'Xác nhận đăng ký thành công lớp: {my_class.name}!', 'success')
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Có lỗi xảy ra: {str(e)}', 'danger')
+
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True)
