@@ -1,11 +1,9 @@
 import hashlib
 from sqlalchemy import func, case, extract, or_
 from datetime import datetime
-
-# Import đầy đủ các model
-from TrungTamNgoaiNgu.models import User, Course, Class, Enrollment, Grade, GradeDetail, Attendance, Invoice, \
-    ClassStatus, EnrollmentStatus, UserRole
-from TrungTamNgoaiNgu import db
+from TrungTamNgoaiNgu.models import (User, Course, Class, Enrollment, Grade, GradeDetail, Attendance, Invoice,
+                                     ClassStatus, EnrollmentStatus, UserRole)
+from TrungTamNgoaiNgu import db, app
 
 
 # =========================================================
@@ -16,8 +14,7 @@ def load_courses():
     return Course.query.all()
 
 
-def load_classes(course_id=None, kw=None):
-    # Chỉ load các lớp đang MỞ (OPEN)
+def load_classes(course_id=None, kw=None, page=1):
     query = Class.query.filter(Class.status == ClassStatus.OPEN)
 
     if course_id:
@@ -25,21 +22,36 @@ def load_classes(course_id=None, kw=None):
     if kw:
         query = query.filter(Class.name.contains(kw))
 
+    if page:
+        page = int(page)
+        size = app.config["PAGE_SIZE"]
+        start = (page - 1) * size
+        # Cách dùng slice này của bạn rất gọn và OK nhé!
+        query = query.slice(start, start + size)
+
     return query.all()
 
+
+# --- BẮT BUỘC PHẢI CÓ HÀM NÀY ĐỂ TÍNH SỐ TRANG ---
+def count_classes(course_id=None, kw=None):
+    query = Class.query.filter(Class.status == ClassStatus.OPEN)
+
+    if course_id:
+        query = query.filter(Class.course_id == int(course_id))
+    if kw:
+        query = query.filter(Class.name.contains(kw))
+
+    return query.count()
 
 def get_class_by_id(class_id):
     return Class.query.get(class_id)
 
-
 def get_user_by_id(user_id):
     return User.query.get(user_id)
-
 
 def auth_user(username, password):
     password = hashlib.md5(password.encode("utf-8")).hexdigest()
     return User.query.filter(User.username == username, User.password == password).first()
-
 
 def add_user(name, username, password, avatar):
     password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
@@ -48,7 +60,6 @@ def add_user(name, username, password, avatar):
     db.session.add(u)
     db.session.commit()
     return u
-
 
 def count_classes_by_course():
     # Thống kê số lớp học theo từng khóa
@@ -125,35 +136,46 @@ def get_unpaid_enrollments(keyword=None):
     return results
 
 
-def pay_enrollment(enroll_id, staff_id):
-    """
-    Xử lý thanh toán: PENDING -> PAID -> Tạo Invoice
-    """
+def pay_enrollment(enroll_id, cashier_id):
     try:
-        enroll_id = int(enroll_id)  # Ép kiểu an toàn
-    except:
-        return False
+        # 1. Tìm phiếu ghi danh
+        enroll = Enrollment.query.get(enroll_id)
 
-    enrollment = Enrollment.query.get(enroll_id)
-
-    if enrollment and enrollment.status == EnrollmentStatus.PENDING:
-        try:
-            # 1. Cập nhật trạng thái
-            enrollment.status = EnrollmentStatus.PAID
-
-            # 2. Tạo hóa đơn
-            amount = enrollment.my_class.price if enrollment.my_class.price else 0
-            inv = Invoice(amount=amount, enrollment_id=enroll_id, staff_id=staff_id)
-
-            db.session.add(inv)
-            db.session.commit()
-            return True
-        except Exception as ex:
-            print("Lỗi thanh toán:", str(ex))
-            db.session.rollback()
+        if not enroll:
+            print(f"❌ Lỗi: Không tìm thấy Enrollment ID {enroll_id}")
             return False
 
-    return False
+        if enroll.status == EnrollmentStatus.PAID:
+            print("⚠️ Phiếu này đã thanh toán rồi!")
+            return True
+
+            # 2. Cập nhật trạng thái
+        enroll.status = EnrollmentStatus.PAID
+
+        # 3. Lấy giá tiền từ Lớp học
+        curr_class = Class.query.get(enroll.class_id)
+        money = curr_class.price if curr_class else 0
+
+        # 4. TẠO INVOICE (Sửa lại cho khớp 100% với model)
+        inv = Invoice(
+            amount=money,  # Model dùng 'amount'
+            created_date=datetime.now(),
+            enrollment_id=enroll_id,  # Model yêu cầu bắt buộc có enrollment_id
+            cashier_id=cashier_id  # Model dùng 'cashier_id'
+        )
+
+        db.session.add(inv)
+        db.session.commit()
+
+        print(f"✅ Đã thanh toán thành công! Số tiền: {money}")
+        return True
+
+    except Exception as ex:
+        db.session.rollback()
+        print("❌ LỖI THANH TOÁN: " + str(ex))
+        import traceback
+        traceback.print_exc()
+        return False
 
 
 # =========================================================

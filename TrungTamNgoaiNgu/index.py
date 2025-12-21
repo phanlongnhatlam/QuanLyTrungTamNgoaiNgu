@@ -1,3 +1,5 @@
+import math
+
 import cloudinary
 from flask import render_template, request, redirect, session, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
@@ -13,13 +15,20 @@ from TrungTamNgoaiNgu.models import UserRole, Class
 
 @app.route("/")
 def index():
-    q = request.args.get('q')
-    course_id = request.args.get('course_id')  # Lấy đúng biến course_id
+    # 1. Lấy tham số từ URL
+    kw = request.args.get('q')
+    course_id = request.args.get('course_id')
+    page = request.args.get('page', 1)  # Mặc định là trang 1
 
-    # Load danh sách lớp học (có lọc theo khóa hoặc tìm kiếm)
-    classes = dao.load_classes(course_id=course_id, kw=q)
+    # 2. Lấy danh sách lớp (đã bị cắt nhỏ)
+    classes = dao.load_classes(course_id=course_id, kw=kw, page=int(page))
 
-    return render_template("index.html", classes=classes)
+    # 3. Tính tổng số trang
+    total = dao.count_classes(course_id=course_id, kw=kw)
+    page_size = app.config['PAGE_SIZE']
+    pages = math.ceil(total / page_size)  # Làm tròn lên (vd 2.1 trang -> 3 trang)
+
+    return render_template("index.html", classes=classes, pages=pages)
 
 
 @login.user_loader
@@ -51,7 +60,7 @@ def login_my_user():
             # --- ĐIỀU HƯỚNG THEO VAI TRÒ ---
             if user.role == UserRole.ADMIN:
                 return redirect('/admin')
-            elif user.role == UserRole.STAFF:
+            elif user.role == UserRole.CASHIER:
                 return redirect('/cashier')
             elif user.role == UserRole.TEACHER:
                 return redirect('/teacher')
@@ -189,40 +198,30 @@ def checkout():
 @app.route("/cashier")
 @login_required
 def cashier_index():
-    """
-    DÀNH CHO THU NGÂN: Trang liệt kê danh sách nợ học phí
-    """
-    if current_user.role != UserRole.STAFF and current_user.role != UserRole.ADMIN:
+    if current_user.role != UserRole.CASHIER and current_user.role != UserRole.ADMIN:
         return redirect("/")
-
     kw = request.args.get("keyword")
-    # Lấy danh sách phiếu ghi danh chưa đóng tiền
     enrollments = dao.get_unpaid_enrollments(kw)
-
-    # Lưu ý: Sửa lại đường dẫn template cho đúng thư mục của bạn
     return render_template("cashier/index.html", enrollments=enrollments)
 
 
 @app.route('/api/pay', methods=['post'])
 @login_required
 def pay():
-    """
-    DÀNH CHO THU NGÂN: Xử lý nút 'Thanh toán'
-    Nhận vào enroll_id -> Chuyển trạng thái Paid -> Xuất hóa đơn
-    """
+    # --- THÊM ĐOẠN CHECK QUYỀN NÀY ---
+    if current_user.role != UserRole.CASHIER and current_user.role != UserRole.ADMIN:
+        return jsonify({'status': 403, 'msg': 'Bạn không có quyền thực hiện hành động này!'})
+    # ---------------------------------
+
     data = request.json
     enroll_id = data.get('enroll_id')
-
     if not enroll_id:
         return jsonify({'status': 400, 'msg': 'Thiếu mã phiếu ghi danh!'})
 
-    # Gọi hàm thanh toán trong DAO
     if dao.pay_enrollment(enroll_id, current_user.id):
         return jsonify({"status": 200, "msg": "Thanh toán thành công"})
 
     return jsonify({"status": 500, "msg": "Lỗi hệ thống hoặc phiếu không hợp lệ"})
-
-
 # =========================================================
 # 4. CHỨC NĂNG GIÁO VIÊN (TEACHER)
 # =========================================================
@@ -278,6 +277,12 @@ def save_grades():
     except Exception as ex:
         return jsonify({"status": 500, "err_msg": str(ex)})
 
+
+@app.route("/classes/<int:class_id>")
+def class_details(class_id):
+    # Gọi hàm lấy lớp học theo ID (đã có trong dao.py)
+    c = dao.get_class_by_id(class_id)
+    return render_template('classes_details.html', prod=c)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,71 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Chi tiết khóa học - {{ prod.name }}{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-5 col-12 text-center">
+            <img src="{{ prod.image if prod.image else 'https://via.placeholder.com/400' }}"
+                 class="img-fluid rounded shadow-sm"
+                 alt="{{ prod.name }}"
+                 style="max-height: 400px; object-fit: cover;">
+        </div>
+
+        <div class="col-md-7 col-12">
+            <h1 class="text-primary fw-bold">{{ prod.name }}</h1>
+
+            <h3 class="text-danger my-3">
+                Giá học phí: {{ "{:,.0f}".format(prod.price) }} VNĐ
+            </h3>
+
+            <div class="mb-4">
+                <strong>Mô tả khóa học:</strong>
+                <p class="text-muted mt-2">
+                    {{ prod.description|safe if prod.description else "Đang cập nhật mô tả..." }}
+                </p>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-warning btn-lg text-white"
+                        onclick="addToCart({{ prod.id }}, '{{ prod.name }}', {{ prod.price }})">
+                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                </button>
+
+                <a href="/" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Xem lớp khác
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addToCart(id, name, price) {
+        // Gọi API thêm vào giỏ hàng (đã viết trong index.py)
+        fetch('/api/carts', {
+            method: 'post',
+            body: JSON.stringify({
+                "id": id,
+                "name": name,
+                "price": price
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json()).then(data => {
+            // Cập nhật số lượng trên icon giỏ hàng
+            let counters = document.getElementsByClassName("cart-counter");
+            for (let c of counters)
+                c.innerText = data.total_quantity;
+
+            alert("Đã thêm khóa học vào giỏ thành công!");
+        }).catch(err => {
+            console.error(err);
+            alert("Có lỗi xảy ra, vui lòng thử lại!");
+        });
+    }
+</script>
+
+{% endblock %}
