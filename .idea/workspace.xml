@@ -3,7 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="a585c766-a6b1-495d-9563-c8eab570353d" name="Changes" comment="hi">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cart.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cashier/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cashier/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -259,6 +265,8 @@
       <workItem from="1766305103609" duration="9000" />
       <workItem from="1766305275113" duration="990000" />
       <workItem from="1766306515457" duration="2773000" />
+      <workItem from="1766310640809" duration="42000" />
+      <workItem from="1766326352037" duration="7128000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <option name="closed" value="true" />
@@ -340,7 +348,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766308398677</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="hi">
+      <option name="closed" value="true" />
+      <created>1766310654234</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1766310654234</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -355,7 +371,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py</url>
-          <line>138</line>
+          <line>136</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
@@ -363,7 +379,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$app.coverage" NAME="app Coverage Results" MODIFIED="1765624173587" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766307507529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
-    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1766306682400" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766335176992" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1766334396334" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
   </component>
 </project>

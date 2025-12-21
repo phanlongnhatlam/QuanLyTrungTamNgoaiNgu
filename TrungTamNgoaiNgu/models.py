@@ -12,6 +12,10 @@ class UserRole(enum.Enum):
     CASHIER = 3
     STUDENT = 4
 
+class ClassLevel(enum.Enum):
+    BEGINNER = 1
+    INTERMEDIATE = 2
+    ADVANCED = 3
 
 class ClassStatus(enum.Enum):
     OPEN = 1
@@ -59,6 +63,7 @@ class Class(db.Model):
                    default="https://res.cloudinary.com/dy1unykph/image/upload/v1741254148/aa0aawermmvttshzvjhc.png")
     status = Column(Enum(ClassStatus), default=ClassStatus.OPEN)
     price = Column(Float, default=0.0)  # Thêm giá tiền nếu cần
+    level = Column(Enum(ClassLevel), default=ClassLevel.BEGINNER)
 
     course_id = Column(Integer, ForeignKey(Course.id), nullable=False)
     teacher_id = Column(Integer, ForeignKey(User.id))
@@ -76,14 +81,18 @@ class Enrollment(db.Model):
     grade = relationship('Grade', backref='enrollment', uselist=False, lazy=True)
     invoice = relationship('Invoice', backref='enrollment', uselist=False, lazy=True)
 
+
 class Regulation(db.Model):
     __tablename__ = 'regulation'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(100), nullable=False, unique=True) # Tên quy định (VD: DIEM_CHUAN)
-    value = Column(Float, default=0) # Giá trị (VD: 5.0)
-    description = Column(String(200)) # Mô tả dễ hiểu (VD: Điểm trung bình để Đạt)
+
+    # Dùng db.Column và db.Integer (có chữ db. đằng trước)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    value = db.Column(db.Float, default=0)
+    description = db.Column(db.String(200))
+
     def __str__(self):
-        return self.description
+        return self.name  # Nên return name để dễ nhìn hơn description
 
 class Grade(db.Model):
     __tablename__ = 'grade'
@@ -167,56 +176,73 @@ if __name__ == '__main__':
         # =================================================================
         # 3. TẠO CLASS (20 LỚP THỦ CÔNG)
         # =================================================================
+        # =================================================================
+        # 3. TẠO CLASS (CẬP NHẬT THÊM LEVEL VÀ GIÁ CHUẨN)
+        # =================================================================
         classes = [
-            # --- NHÓM 1: TIẾNG ANH (TOEIC & IELTS) ---
-            Class(name='[TOEIC] Giải đề cấp tốc 550+', room='P.101', schedule='T2-T4-T6 (17h30)', price=1800000,
-                  teacher_id=u_teacher_toeic.id, course_id=c_eng.id),
-            Class(name='[TOEIC] Basic cho người mất gốc', room='P.102', schedule='T3-T5-T7 (19h30)', price=1500000,
-                  teacher_id=u_teacher_toeic.id, course_id=c_eng.id),
-            Class(name='[IELTS] Foundation 4.5 - 5.0', room='Lab 1', schedule='T2-T4-T6 (19h30)', price=3500000,
-                  teacher_id=u_teacher_ielts.id, course_id=c_eng.id),
-            Class(name='[IELTS] Speaking & Writing Master', room='P.VIP', schedule='Cuối tuần (Sáng)', price=4500000,
-                  teacher_id=u_teacher_ielts.id, course_id=c_eng.id),
-            Class(name='[Giao Tiếp] English for Business', room='P.101', schedule='T3-T5-T7 (18h00)', price=2500000,
-                  teacher_id=u_teacher_ielts.id, course_id=c_eng.id),
-            Class(name='[Kids] Tiếng Anh thiếu nhi K1', room='P.Kids', schedule='Cuối tuần (Chiều)', price=1200000,
-                  teacher_id=u_teacher_toeic.id, course_id=c_eng.id),
+            # --- TIẾNG ANH ---
+            Class(name='[Intermediate] Luyện thi TOEIC cấp tốc 550+', room='P.101', schedule='T2-T4-T6 (17h30)',
+                  price=2500000, level=ClassLevel.INTERMEDIATE,
+                  teacher_id=u_teacher_toeic.id, course_id=c_eng.id,
+                  image="https://th.bing.com/th/id/OIP.A728vC7i8nn0yksXxn6lcQHaE5?w=269&h=183&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
 
-            # --- NHÓM 2: TIẾNG NHẬT ---
-            Class(name='[N5] Tiếng Nhật sơ cấp 1', room='P.201', schedule='T2-T4-T6 (18h00)', price=1600000,
-                  teacher_id=u_teacher_jap.id, course_id=c_jap.id),
-            Class(name='[N5] Tiếng Nhật sơ cấp 2', room='P.202', schedule='T3-T5-T7 (19h30)', price=1600000,
-                  teacher_id=u_teacher_jap.id, course_id=c_jap.id),
-            Class(name='[N4] Trung cấp & Kanji', room='P.201', schedule='T2-T4-T6 (19h30)', price=2200000,
-                  teacher_id=u_teacher_jap.id, course_id=c_jap.id),
-            Class(name='[N3] Luyện thi JLPT N3', room='P.VIP', schedule='Cuối tuần (Sáng)', price=3000000,
-                  teacher_id=u_teacher_jap.id, course_id=c_jap.id),
-            Class(name='[Kaiwa] Giao tiếp người bản xứ', room='Lab 2', schedule='T3-T5 (18h00)', price=2500000,
-                  teacher_id=u_teacher_jap.id, course_id=c_jap.id),
+            Class(name='[Beginner] Tiếng Anh Basic cho người mất gốc', room='P.102', schedule='T3-T5-T7 (19h30)',
+                  price=1500000, level=ClassLevel.BEGINNER,
+                  teacher_id=u_teacher_toeic.id, course_id=c_eng.id,
+                  image="https://th.bing.com/th/id/OIP.A728vC7i8nn0yksXxn6lcQHaE5?w=269&h=183&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
 
-            # --- NHÓM 3: TIẾNG HÀN ---
-            Class(name='[Topik I] Hàn ngữ nhập môn', room='P.301', schedule='T2-T4-T6 (17h30)', price=1500000,
-                  teacher_id=u_teacher_kor.id, course_id=c_kor.id),
-            Class(name='[Topik II] Hàn ngữ sơ cấp 2', room='P.302', schedule='T3-T5-T7 (19h30)', price=1800000,
-                  teacher_id=u_teacher_kor.id, course_id=c_kor.id),
-            Class(name='[XKLĐ] Tiếng Hàn xuất khẩu lao động', room='Hội trường A', schedule='T2-T6 (Sáng)',
-                  price=5000000, teacher_id=u_teacher_kor.id, course_id=c_kor.id),
-            Class(name='[Giao Tiếp] Hàn ngữ du lịch', room='P.301', schedule='Cuối tuần (Chiều)', price=2000000,
-                  teacher_id=u_teacher_kor.id, course_id=c_kor.id),
+            Class(name='[Advanced] IELTS Foundation (Band 4.5 - 5.0)', room='Lab 1', schedule='T2-T4-T6 (19h30)',
+                  price=3500000, level=ClassLevel.ADVANCED,
+                  teacher_id=u_teacher_ielts.id, course_id=c_eng.id,
+                  image="https://th.bing.com/th/id/OIP.WEEqdxMeKYQMhT4ZughsNAHaEK?w=275&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
 
-            # --- NHÓM 4: TIẾNG PHÁP ---
-            Class(name='[A1] Tiếng Pháp cho người mới', room='P.401', schedule='T2-T4 (18h00)', price=2000000,
-                  teacher_id=u_teacher_fra.id, course_id=c_fra.id),
-            Class(name='[A2] Tiếng Pháp sơ cấp', room='P.401', schedule='T3-T5 (19h30)', price=2200000,
-                  teacher_id=u_teacher_fra.id, course_id=c_fra.id),
-            Class(name='[B1] Luyện thi DELF B1', room='P.VIP', schedule='Cuối tuần (Sáng)', price=4000000,
-                  teacher_id=u_teacher_fra.id, course_id=c_fra.id),
-            Class(name='[Giao Tiếp] Pháp ngữ văn phòng', room='Lab 1', schedule='T6-T7 (18h00)', price=3000000,
-                  teacher_id=u_teacher_fra.id, course_id=c_fra.id),
+            # --- TIẾNG NHẬT ---
+            Class(name='[Beginner] Tiếng Nhật sơ cấp 1 (N5)', room='P.201', schedule='T2-T4-T6 (18h00)',
+                  price=1500000, level=ClassLevel.BEGINNER,
+                  teacher_id=u_teacher_jap.id, course_id=c_jap.id,
+                  image="https://th.bing.com/th/id/OIP.cRTUo9uXcFe0PAZVaKdBswHaE8?w=255&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
 
-            # --- LỚP BỔ SUNG CHO TRÒN 20 ---
-            Class(name='[IELTS] Writing Task 1 & 2', room='Online Zoom', schedule='T7-CN (20h00)', price=2800000,
-                  teacher_id=u_teacher_ielts.id, course_id=c_eng.id),
+            Class(name='[Beginner] Tiếng Nhật sơ cấp 2 (N5)', room='P.202', schedule='T3-T5-T7 (19h30)',
+                  price=1500000, level=ClassLevel.BEGINNER,
+                  teacher_id=u_teacher_jap.id, course_id=c_jap.id,
+                  image="https://th.bing.com/th/id/OIP.cRTUo9uXcFe0PAZVaKdBswHaE8?w=255&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            Class(name='[Intermediate] Tiếng Nhật Trung cấp & Kanji (N4)', room='P.201', schedule='T2-T4-T6 (19h30)',
+                  price=2500000, level=ClassLevel.INTERMEDIATE,
+                  teacher_id=u_teacher_jap.id, course_id=c_jap.id,
+                  image="https://th.bing.com/th/id/OIP.cRTUo9uXcFe0PAZVaKdBswHaE8?w=255&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # --- TIẾNG HÀN ---
+            Class(name='[Beginner] Hàn ngữ nhập môn (Topik I)', room='P.301', schedule='T2-T4-T6 (17h30)',
+                  price=1500000, level=ClassLevel.BEGINNER,
+                  teacher_id=u_teacher_kor.id, course_id=c_kor.id,
+                  image="https://th.bing.com/th/id/OIP.5XXJZtFh_5kURi4-TIMJbAHaFj?w=220&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            Class(name='[Intermediate] Hàn ngữ sơ cấp 2 (Topik II)', room='P.302', schedule='T3-T5-T7 (19h30)',
+                  price=2500000, level=ClassLevel.INTERMEDIATE,
+                  teacher_id=u_teacher_kor.id, course_id=c_kor.id,
+                  image="https://th.bing.com/th/id/OIP.5XXJZtFh_5kURi4-TIMJbAHaFj?w=220&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            Class(name='[Advanced] Luyện thi Xuất khẩu lao động', room='Hội trường A', schedule='T2-T6 (Sáng)',
+                  price=3500000, level=ClassLevel.ADVANCED,
+                  teacher_id=u_teacher_kor.id, course_id=c_kor.id,
+                  image="https://th.bing.com/th/id/OIP.5XXJZtFh_5kURi4-TIMJbAHaFj?w=220&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            # --- TIẾNG PHÁP ---
+            Class(name='[Beginner] Tiếng Pháp cho người mới (A1)', room='P.401', schedule='T2-T4 (18h00)',
+                  price=1500000, level=ClassLevel.BEGINNER,
+                  teacher_id=u_teacher_fra.id, course_id=c_fra.id,
+                  image="https://th.bing.com/th/id/OIP.wgUYAGe1p19elS9FnQW2OgHaE7?w=266&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            Class(name='[Beginner] Tiếng Pháp sơ cấp (A2)', room='P.401', schedule='T3-T5 (19h30)',
+                  price=1500000, level=ClassLevel.BEGINNER,
+                  teacher_id=u_teacher_fra.id, course_id=c_fra.id,
+                  image="https://th.bing.com/th/id/OIP.wgUYAGe1p19elS9FnQW2OgHaE7?w=266&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
+
+            Class(name='[Advanced] Luyện thi DELF B1', room='P.VIP', schedule='Cuối tuần (Sáng)',
+                  price=3500000, level=ClassLevel.ADVANCED,
+                  teacher_id=u_teacher_fra.id, course_id=c_fra.id,
+                  image="https://th.bing.com/th/id/OIP.wgUYAGe1p19elS9FnQW2OgHaE7?w=266&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
         ]
 
         db.session.add_all(classes)
@@ -229,7 +255,11 @@ if __name__ == '__main__':
             r1 = Regulation(name='PASSING_SCORE', value=5.0, description='Điểm trung bình chuẩn để ĐẬU')
             r2 = Regulation(name='MAX_STUDENTS', value=40, description='Sĩ số tối đa của một lớp')
             r3 = Regulation(name='MIN_AGE', value=18, description='Độ tuổi tối thiểu đăng ký học')
-            db.session.add_all([r1, r2, r3])
+            r4 = Regulation(name='FEE_BEGINNER', value=1500000, description='Học phí Cơ bản')
+            r5 = Regulation(name='FEE_INTERMEDIATE', value=2500000, description='Học phí Trung cấp')
+            r6 = Regulation(name='FEE_ADVANCED', value=3500000, description='Học phí Nâng cao')
+
+            db.session.add_all([r1, r2, r3, r4, r5, r6])
             db.session.commit()
 
-        print(f">>> ĐÃ TẠO THỦ CÔNG {len(classes)} LỚP HỌC THÀNH CÔNG!")
+        print(f">>> ĐÃ TẠO DATABASE THÀNH CÔNG!")

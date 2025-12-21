@@ -14,7 +14,6 @@
                     <th>ID</th>
                     <th>Tên sản phẩm</th>
                     <th>Giá sản phẩm</th>
-                    <th>Số lượng</th>
                     <th>Xóa</th>
                 </tr>
             </thead>
@@ -24,10 +23,6 @@
                     <td>{{p.id}}</td>
                     <td>{{p.name}}</td>
                     <td>{{"{:,.0f}".format(p.price)}} VND</td>
-                    <td>
-                        <input type="number" value="{{p.quantity}}" class="form-control text-center mx-auto"
-                               style="width: 80px" onblur="updateCart({{p.id}}, this)">
-                    </td>
                     <td>
                         <button class="btn btn-danger" onclick="deleteCart({{p.id}})">&times;</button>
                     </td>

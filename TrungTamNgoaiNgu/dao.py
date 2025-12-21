@@ -26,9 +26,7 @@ def load_classes(course_id=None, kw=None, page=1):
         page = int(page)
         size = app.config["PAGE_SIZE"]
         start = (page - 1) * size
-        # Cách dùng slice này của bạn rất gọn và OK nhé!
         query = query.slice(start, start + size)
-
     return query.all()
 
 

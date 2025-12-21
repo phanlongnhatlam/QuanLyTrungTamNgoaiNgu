@@ -15,10 +15,16 @@ from TrungTamNgoaiNgu.models import UserRole, Class
 
 @app.route("/")
 def index():
-    # 1. Lấy tham số từ URL
+    if current_user.is_authenticated:
+        if current_user.role == UserRole.ADMIN:
+            return redirect('/admin')
+        elif current_user.role == UserRole.CASHIER:
+            return redirect('/cashier')
+        elif current_user.role == UserRole.TEACHER:
+            return redirect('/teacher')
     kw = request.args.get('q')
     course_id = request.args.get('course_id')
-    page = request.args.get('page', 1)  # Mặc định là trang 1
+    page = request.args.get('page', 1)
 
     # 2. Lấy danh sách lớp (đã bị cắt nhỏ)
     classes = dao.load_classes(course_id=course_id, kw=kw, page=int(page))
@@ -140,7 +146,7 @@ def add_to_cart():
 
     id = str(request.json.get('id'))
     if id in cart:
-        cart[id]["quantity"] += 1
+        pass
     else:
         cart[id] = {
             "id": id,
@@ -268,13 +274,38 @@ def attendance(class_id):
 @app.route("/api/save-grades", methods=['post'])
 @login_required
 def save_grades():
-    if current_user.role != UserRole.TEACHER: return jsonify({"status": 403})
+    # 1. Kiểm tra quyền Giáo viên
+    if current_user.role != UserRole.TEACHER:
+        return jsonify({"status": 403, "err_msg": "Không có quyền truy cập"})
+
     try:
         data = request.json
+
+        # 2. VÒNG LẶP KIỂM TRA ĐIỂM (VALIDATION)
+        # Nếu có điểm sai -> Return lỗi ngay lập tức
+        for item in data:
+            for s in item['scores']:
+                try:
+                    # Chuyển về số thực để so sánh
+                    val = float(s['value'])
+                    if val < 0 or val > 10:
+                        return jsonify({
+                            "status": 400,
+                            "err_msg": f"Lỗi: Điểm '{s['name']}' là {val}. Điểm phải từ 0 đến 10."
+                        })
+                except ValueError:
+                    # Nếu nhập chữ thay vì số
+                    return jsonify({"status": 400, "err_msg": "Dữ liệu điểm không hợp lệ (phải là số)."})
+
+        # 3. VÒNG LẶP LƯU DỮ LIỆU (CHỈ CHẠY KHI KHÔNG CÓ LỖI Ở TRÊN)
         for item in data:
             dao.save_grade_with_details(item['enroll_id'], item['scores'])
-        return jsonify({"status": 200})
+
+        # 4. QUAN TRỌNG: PHẢI CÓ DÒNG RETURN NÀY CHO TRƯỜNG HỢP THÀNH CÔNG
+        return jsonify({"status": 200, "msg": "Lưu bảng điểm thành công!"})
+
     except Exception as ex:
+        # 5. Return khi có lỗi hệ thống (Code, Database...)
         return jsonify({"status": 500, "err_msg": str(ex)})
 
 
