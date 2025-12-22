@@ -80,6 +80,7 @@ class Enrollment(db.Model):
     class_id = Column(Integer, ForeignKey(Class.id), nullable=False)
     grade = relationship('Grade', backref='enrollment', uselist=False, lazy=True)
     invoice = relationship('Invoice', backref='enrollment', uselist=False, lazy=True)
+    __table_args__ = (db.UniqueConstraint('student_id', 'class_id', name='unique_student_class'),)
 
 
 class Regulation(db.Model):
@@ -182,7 +183,7 @@ if __name__ == '__main__':
         classes = [
             # --- TIẾNG ANH ---
             Class(name='[Intermediate] Luyện thi TOEIC cấp tốc 550+', room='P.101', schedule='T2-T4-T6 (17h30)',
-                  price=2500000, level=ClassLevel.INTERMEDIATE,
+                  price=2500000, level=ClassLevel.INTERMEDIATE,max_students = 2,
                   teacher_id=u_teacher_toeic.id, course_id=c_eng.id,
                   image="https://th.bing.com/th/id/OIP.A728vC7i8nn0yksXxn6lcQHaE5?w=269&h=183&c=7&r=0&o=7&cb=ucfimg2&dpr=1.5&pid=1.7&rm=3&ucfimg=1"),
 

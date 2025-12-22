@@ -5,6 +5,15 @@
 
     <div class="row">
         {% for c in classes %}
+
+            {% set ns = namespace(is_registered=false) %}
+            {% if current_user.is_authenticated %}
+                {% for e in c.enrollments %}
+                    {% if e.student_id == current_user.id %}
+                        {% set ns.is_registered = true %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             <div class="col-md-3 col-xs-12" style="padding: 10px;">
                 <div class="card h-100 shadow-sm">
                     <a href="/classes/{{ c.id }}">
@@ -16,20 +25,36 @@
                         <h5 class="card-title">
                             <a href="/classes/{{ c.id }}" class="text-decoration-none text-dark">{{ c.name }}</a>
                         </h5>
+
                         <p class="card-text mb-1"><small class="text-muted">Lịch: {{ c.schedule }}</small></p>
                         <p class="card-text mb-1"><small class="text-muted">Phòng: {{ c.room }}</small></p>
                         <h5 class="card-text text-danger mt-2 fw-bold">{{ "{:,.0f}".format(c.price) }} VNĐ</h5>
-                        <p class="card-text text-muted">
+
+                        <p class="card-text text-muted mb-2">
                             <i class="fa fa-users"></i> Sĩ số:
-                            <span class="font-weight-bold text-primary">{{ c.enrollments|length }}</span>
-                            / {{ c.max_students }}
+                            <span class="font-weight-bold {{ 'text-danger' if c.enrollments|length >= c.max_students else 'text-primary' }}">
+                                {{ c.enrollments|length }}</span> / {{ c.max_students }}
                         </p>
-                        <div class="mt-auto d-flex justify-content-between">
+
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
                             <a href="/classes/{{ c.id }}" class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
-                            <button onclick="addToCart({{ c.id }}, '{{ c.name }}', {{ c.price }})"
-                                    class="btn btn-danger btn-sm">
-                                Đăng ký
-                            </button>
+
+                            {% if ns.is_registered %}
+                                <button class="btn btn-success btn-sm" disabled style="cursor: not-allowed; opacity: 0.8;">
+                                    <i class="fa fa-check"></i> Đã đăng ký
+                                </button>
+
+                            {% elif c.enrollments|length >= c.max_students %}
+                                <button class="btn btn-secondary btn-sm" disabled style="cursor: not-allowed;">
+                                    <i class="fa fa-ban"></i> Hết chỗ
+                                </button>
+
+                            {% else %}
+                                <button onclick="addToCart({{ c.id }}, '{{ c.name }}', {{ c.price }})"
+                                        class="btn btn-danger btn-sm">
+                                    <i class="fa fa-cart-plus"></i> Đăng ký
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -39,20 +64,16 @@
 
     {% if pages > 1 %}
         <ul class="pagination justify-content-center mt-4 mb-5">
-
             {% for i in range(1, pages + 1) %}
-
                 <li class="page-item {% if request.args.get('page', 1)|int == i %}active{% endif %}">
-
                     <a class="page-link"
                        href="{{ url_for('index', page=i, q=request.args.get('q'), course_id=request.args.get('course_id')) }}">
                         {{ i }}
                     </a>
-
                 </li>
             {% endfor %}
-
         </ul>
     {% endif %}
+
 
 {% endblock %}
