@@ -8,14 +8,7 @@ from TrungTamNgoaiNgu import app, dao, login, db, utils, admin
 from TrungTamNgoaiNgu.decoraters import anonymous_required
 from TrungTamNgoaiNgu.models import UserRole, Class, Enrollment
 
-cloudinary.config(
-    cloud_name = "dz46tygsf",
-    api_key = "399971149668821",
-    api_secret = "SeXVDWlex0ppidZyCrMSoinwiYY"
-)
-# =========================================================
-# 1. TRANG CHỦ & ĐĂNG NHẬP/ĐĂNG KÝ
-# =========================================================
+
 
 @app.route("/")
 def index():

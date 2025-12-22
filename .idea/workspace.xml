@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a585c766-a6b1-495d-9563-c8eab570353d" name="Changes" comment="hi">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/css/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -264,7 +264,9 @@
       <workItem from="1766306515457" duration="2773000" />
       <workItem from="1766310640809" duration="42000" />
       <workItem from="1766326352037" duration="8048000" />
-      <workItem from="1766388394177" duration="2330000" />
+      <workItem from="1766388394177" duration="2693000" />
+      <workItem from="1766402109312" duration="8000" />
+      <workItem from="1766402156505" duration="1294000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <option name="closed" value="true" />
@@ -362,7 +364,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766335284020</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="hi">
+      <option name="closed" value="true" />
+      <created>1766390881824</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1766390881824</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -396,7 +406,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$app.coverage" NAME="app Coverage Results" MODIFIED="1765624173587" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766389450789" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766402188341" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
     <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1766389446678" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
   </component>
 </project>
