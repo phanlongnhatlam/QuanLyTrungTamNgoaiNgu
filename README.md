@@ -4,7 +4,7 @@
 👥 THÀNH VIÊN THỰC HIỆN
 | 1 | **Trần Quốc Đồng** | 2351050034
 | 2 | **Phan Long Nhật Lâm** | 2351050089
-🚀 CÔNG NGHỆ SỬ DỤNG
+##🚀 CÔNG NGHỆ SỬ DỤNG
 ### Backend
 * **Ngôn ngữ:** Python 3.x
 * **Framework:** Flask
