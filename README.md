@@ -41,7 +41,7 @@ Bước 1: Clone dự án
 ```bash
 git clone [https://github.com/username/QuanLyTrungTamNgoaiNgu.git](https://github.com/username/QuanLyTrungTamNgoaiNgu.git)
 cd QuanLyTrungTamNgoaiNgu
-### Bước 2: Cài đặt môi trường ảo
+Bước 2: Cài đặt môi trường ảo
 python -m venv venv
 # Windows:
 venv\Scripts\activate
