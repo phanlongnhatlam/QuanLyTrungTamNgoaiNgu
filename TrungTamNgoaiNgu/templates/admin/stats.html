@@ -92,13 +92,13 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
-    // Cấu hình chung: maintainAspectRatio = false để biểu đồ tự co theo div cha
+
     const commonOptions = {
         responsive: true,
         maintainAspectRatio: false,
     };
 
-    // 1. DOANH THU
+
     new Chart(document.getElementById('revenueChart'), {
         type: 'bar',
         data: {
@@ -107,15 +107,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 label: 'Doanh thu',
                 data: [{% for s in stats_revenue %} {{ s[2] }}, {% endfor %}],
                 backgroundColor: '#4e73df',
-                barPercentage: 0.5 // Làm cột nhỏ lại cho thanh thoát
+                barPercentage: 0.5
             }]
         },
         options: commonOptions
     });
 
-    // 2. HỌC VIÊN (Pie Chart)
+
     new Chart(document.getElementById('studentChart'), {
-        type: 'doughnut', // Dạng bánh quy rỗng giữa nhìn sang hơn Pie thường
+        type: 'doughnut',
         data: {
             labels: [{% for s in stats_student %} "{{ s[1] }}", {% endfor %}],
             datasets: [{
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
         options: commonOptions
     });
 
-    // 3. ĐẬU/RỚT (Stacked Bar)
+
     new Chart(document.getElementById('qualityChart'), {
         type: 'bar',
         data: {
@@ -142,7 +142,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // 4. XU HƯỚNG THÁNG (Line Chart)
     let monthData = new Array(12).fill(0);
     {% for s in stats_month %} monthData[{{ s[0] }} - 1] = {{ s[1] }}; {% endfor %}
 
@@ -156,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 borderColor: '#f6c23e',
                 backgroundColor: 'rgba(246, 194, 62, 0.1)',
                 fill: true,
-                tension: 0.4 // Độ cong mềm mại
+                tension: 0.4
             }]
         },
         options: commonOptions

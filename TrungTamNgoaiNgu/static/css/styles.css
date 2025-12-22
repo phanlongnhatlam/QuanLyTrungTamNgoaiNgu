@@ -1,8 +1,5 @@
-/* =========================================
-   1. CẤU HÌNH CHUNG (GLOBAL)
-   ========================================= */
 body {
-    background-color: #f8f9fa; /* Màu nền xám nhẹ dịu mắt */
+    background-color: #f8f9fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
 }
@@ -11,37 +8,30 @@ h1, h2, h3, h4, h5 {
     font-weight: 600;
 }
 
-/* =========================================
-   2. HIỆU ỨNG THẺ CARD (LỚP HỌC)
-   ========================================= */
 .card {
     border: none;
-    border-radius: 15px; /* Bo tròn góc mềm mại */
-    transition: all 0.3s ease-in-out; /* Tạo hiệu ứng mượt khi di chuột */
+    border-radius: 15px;
+    transition: all 0.3s ease-in-out;
     background: #fff;
     overflow: hidden;
 }
 
-/* Khi di chuột vào thẻ lớp học -> Nổi lên và đổ bóng */
+
 .card:hover {
-    transform: translateY(-10px); /* Bay lên nhẹ 10px */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Đổ bóng sâu hơn */
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* Ảnh lớp học */
+
 .card-img-top {
     border-bottom: 1px solid #eee;
     transition: transform 0.5s ease;
 }
 
-/* Zoom nhẹ ảnh khi hover */
 .card:hover .card-img-top {
     transform: scale(1.05);
 }
 
-/* =========================================
-   3. THANH SĨ SỐ (PROGRESS BAR)
-   ========================================= */
 .progress {
     background-color: #e9ecef;
     border-radius: 20px;
@@ -51,16 +41,12 @@ h1, h2, h3, h4, h5 {
 
 .progress-bar {
     border-radius: 20px;
-    /* Hiệu ứng sọc chéo động (nếu muốn đẹp hơn) */
+
     background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
     background-size: 1rem 1rem;
 }
-
-/* =========================================
-   4. NÚT BẤM (BUTTONS)
-   ========================================= */
 .btn {
-    border-radius: 50px; /* Nút bo tròn hình viên thuốc */
+    border-radius: 50px;
     padding: 6px 20px;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -82,15 +68,12 @@ h1, h2, h3, h4, h5 {
     border: none;
 }
 
-/* Nút Disable (Hết chỗ/Đã đăng ký) */
 .btn:disabled {
     opacity: 0.7;
     cursor: not-allowed;
 }
 
-/* =========================================
-   5. MODAL THÔNG BÁO (POPUP)
-   ========================================= */
+
 .modal-content {
     border-radius: 20px;
     border: none;
@@ -106,7 +89,7 @@ h1, h2, h3, h4, h5 {
     border-top: none;
 }
 
-/* Hiệu ứng rung icon khi lỗi */
+
 @keyframes shake {
     0% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
@@ -120,7 +103,7 @@ h1, h2, h3, h4, h5 {
     animation: shake 0.5s ease-in-out;
 }
 
-/* Hiệu ứng nảy icon khi thành công */
+
 @keyframes popIn {
     0% { transform: scale(0); opacity: 0; }
     80% { transform: scale(1.2); opacity: 1; }
@@ -132,11 +115,9 @@ h1, h2, h3, h4, h5 {
     animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* =========================================
-   6. GIỎ HÀNG (CART TABLE)
-   ========================================= */
+
 .table td, .table th {
-    vertical-align: middle; /* Căn giữa nội dung theo chiều dọc */
+    vertical-align: middle;
 }
 
 .table img {

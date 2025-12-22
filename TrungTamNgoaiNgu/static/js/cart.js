@@ -63,19 +63,15 @@ function deleteCart(id){
     }
 }
 
-// 1. Phải truyền tham số enrollId vào hàm
 function pay(enrollId) {
     if (confirm("Có chắc chắn thanh toán không?") === true) {
 
-        fetch('/api/pay', { // Thêm dấu / ở đầu để chắc chắn đúng đường dẫn
-            method: 'post',
-
-            // 2. QUAN TRỌNG: Phải khai báo header để Server biết đây là JSON
+        fetch('/api/pay', {
             headers: {
                 'Content-Type': 'application/json'
             },
 
-            // 3. QUAN TRỌNG: Phải đóng gói cái ID gửi đi
+
             body: JSON.stringify({
                 "enroll_id": enrollId
             })
@@ -85,18 +81,18 @@ function pay(enrollId) {
                 alert(data.msg); // Thông báo thành công
                 location.reload();
             } else {
-                // In ra lỗi nếu có (data.msg hoặc data.err_msg tùy code python trả về)
+
                 alert(data.msg || data.err_msg);
             }
         }).catch(err => {
-            console.error(err); // In lỗi ra console nếu mất mạng hoặc lỗi code
+            console.error(err);
         });
     }
 }
 function checkout() {
     if (!confirm("Xác nhận đăng ký các lớp này?")) return;
 
-    // Gọi vào route checkout
+
     fetch('/api/checkout', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'}

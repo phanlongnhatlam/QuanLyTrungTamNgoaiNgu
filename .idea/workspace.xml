@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="a585c766-a6b1-495d-9563-c8eab570353d" name="Changes" comment="hi">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/index.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/admin.js" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/admin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/cart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/grading.js" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/static/js/grading.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/admin/stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/admin/stats.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/cart.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/classes_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/templates/classes_details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TrungTamNgoaiNgu/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/TrungTamNgoaiNgu/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,8 +46,12 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/teacher-modules" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="RESET_MODE" value="MIXED" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -63,23 +79,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.index.executor&quot;: &quot;Run&quot;,
-    &quot;Python.models (1).executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.__init__.executor": "Run",
+    "Python.app.executor": "Run",
+    "Python.dao.executor": "Run",
+    "Python.decoraters.executor": "Run",
+    "Python.index.executor": "Run",
+    "Python.models (1).executor": "Run",
+    "Python.utils.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "D:/QuanLyTrungTamNgoaiNgu",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\QuanLyTrungTamNgoaiNgu\TrungTamNgoaiNgu\templates" />
@@ -88,6 +109,30 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.index">
+    <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="QuanLyTrungTamNgoaiNgu" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TrungTamNgoaiNgu/__init__.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="index" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="QuanLyTrungTamNgoaiNgu" />
       <option name="ENV_FILES" value="" />
@@ -160,6 +205,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="utils" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="QuanLyTrungTamNgoaiNgu" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TrungTamNgoaiNgu/utils.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="QuanLyTrungTamNgoaiNgu" type="Python.FlaskServer">
       <module name="QuanLyTrungTamNgoaiNgu" />
       <option name="target" value="$PROJECT_DIR$/TrungTamNgoaiNgu/models.py" />
@@ -182,14 +251,15 @@
         <item itemvalue="Python.index" />
         <item itemvalue="Python.models (1)" />
         <item itemvalue="Python.models" />
+        <item itemvalue="Python.index" />
+        <item itemvalue="Python.models (1)" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-PY-253.28294.336" />
-        <option value="bundled-python-sdk-0978a7220b69-9867c7d4c0a4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.28294.336" />
+        <option value="bundled-python-sdk-348a24fa61fa-5312c7369657-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.23774.444" />
       </set>
     </attachedChunks>
   </component>
@@ -248,25 +318,7 @@
       <workItem from="1765884382443" duration="157000" />
       <workItem from="1765884683027" duration="1092000" />
       <workItem from="1765885883238" duration="89000" />
-      <workItem from="1765886440364" duration="1416000" />
-      <workItem from="1766054884291" duration="789000" />
-      <workItem from="1766055690063" duration="67000" />
-      <workItem from="1766055771648" duration="61000" />
-      <workItem from="1766056058581" duration="7801000" />
-      <workItem from="1766135539526" duration="670000" />
-      <workItem from="1766236224556" duration="72000" />
-      <workItem from="1766301625019" duration="779000" />
-      <workItem from="1766302741225" duration="87000" />
-      <workItem from="1766302841091" duration="2013000" />
-      <workItem from="1766304901235" duration="165000" />
-      <workItem from="1766305103609" duration="9000" />
-      <workItem from="1766305275113" duration="990000" />
-      <workItem from="1766306515457" duration="2773000" />
-      <workItem from="1766310640809" duration="42000" />
-      <workItem from="1766326352037" duration="8048000" />
-      <workItem from="1766388394177" duration="2693000" />
-      <workItem from="1766402109312" duration="8000" />
-      <workItem from="1766402156505" duration="1294000" />
+      <workItem from="1765886440364" duration="1200000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <option name="closed" value="true" />
@@ -292,121 +344,19 @@
       <option name="project" value="LOCAL" />
       <updated>1765802363643</updated>
     </task>
-    <task id="LOCAL-00004" summary="hi">
-      <option name="closed" value="true" />
-      <created>1765887860413</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1765887860413</updated>
-    </task>
-    <task id="LOCAL-00005" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766057588724</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1766057588724</updated>
-    </task>
-    <task id="LOCAL-00006" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766058836032</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1766058836032</updated>
-    </task>
-    <task id="LOCAL-00007" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766062899418</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1766062899418</updated>
-    </task>
-    <task id="LOCAL-00008" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766064043949</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1766064043949</updated>
-    </task>
-    <task id="LOCAL-00009" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766235815586</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1766235815586</updated>
-    </task>
-    <task id="LOCAL-00010" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766308398676</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1766308398677</updated>
-    </task>
-    <task id="LOCAL-00011" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766310654234</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1766310654234</updated>
-    </task>
-    <task id="LOCAL-00012" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766335284020</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1766335284020</updated>
-    </task>
-    <task id="LOCAL-00013" summary="hi">
-      <option name="closed" value="true" />
-      <created>1766390881824</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1766390881824</updated>
-    </task>
-    <option name="localTasksCounter" value="14" />
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="hi" />
     <option name="LAST_COMMIT_MESSAGE" value="hi" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/TrungTamNgoaiNgu/dao.py</url>
-          <line>136</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$app.coverage" NAME="app Coverage Results" MODIFIED="1765624173587" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766402188341" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
+    <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$index.coverage" NAME="index Coverage Results" MODIFIED="1766406620240" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
     <SUITE FILE_PATH="coverage/QuanLyTrungTamNgoaiNgu$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1766389446678" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TrungTamNgoaiNgu" />
   </component>
 </project>

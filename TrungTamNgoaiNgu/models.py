@@ -86,7 +86,7 @@ class Enrollment(db.Model):
 class Regulation(db.Model):
     __tablename__ = 'regulation'
 
-    # Dùng db.Column và db.Integer (có chữ db. đằng trước)
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     value = db.Column(db.Float, default=0)
@@ -142,12 +142,10 @@ if __name__ == '__main__':
         db.drop_all()
         db.create_all()
 
-        # =================================================================
-        # 1. TẠO USER (GIÁO VIÊN & NHÂN VIÊN)
-        # =================================================================
+
         hashed_pw = hashlib.md5('123456'.encode('utf-8')).hexdigest()
 
-        # Admin & Staff
+        # Admin & thu ngân
         u_admin = User(name='Quản Trị Viên', username='admin', password=hashed_pw, role=UserRole.ADMIN)
         u_cashier = User(name='Thu Ngân Viên', username='cashier', password=hashed_pw, role=UserRole.CASHIER)
         u_student = User(name='Học Viên Test', username='student', password=hashed_pw, role=UserRole.STUDENT)
@@ -163,9 +161,9 @@ if __name__ == '__main__':
                             u_teacher_fra])
         db.session.commit()
 
-        # =================================================================
+
         # 2. TẠO COURSE (KHÓA HỌC)
-        # =================================================================
+
         c_eng = Course(name='Tiếng Anh', description='Đào tạo TOEIC, IELTS, Giao tiếp chuẩn Quốc tế')
         c_jap = Course(name='Tiếng Nhật', description='Tiếng Nhật sơ cấp đến cao cấp (JLPT)')
         c_kor = Course(name='Tiếng Hàn', description='Luyện thi Topik & Xuất khẩu lao động')
@@ -174,12 +172,7 @@ if __name__ == '__main__':
         db.session.add_all([c_eng, c_jap, c_kor, c_fra])
         db.session.commit()
 
-        # =================================================================
-        # 3. TẠO CLASS (20 LỚP THỦ CÔNG)
-        # =================================================================
-        # =================================================================
-        # 3. TẠO CLASS (CẬP NHẬT THÊM LEVEL VÀ GIÁ CHUẨN)
-        # =================================================================
+       # 3 tạo lớp học
         classes = [
             # --- TIẾNG ANH ---
             Class(name='[Intermediate] Luyện thi TOEIC cấp tốc 550+', room='P.101', schedule='T2-T4-T6 (17h30)',
@@ -249,9 +242,9 @@ if __name__ == '__main__':
         db.session.add_all(classes)
         db.session.commit()
 
-        # =================================================================
+
         # 4. TẠO QUY ĐỊNH
-        # =================================================================
+
         if not Regulation.query.first():
             r1 = Regulation(name='PASSING_SCORE', value=5.0, description='Điểm trung bình chuẩn để ĐẬU')
             r2 = Regulation(name='MAX_STUDENTS', value=40, description='Sĩ số tối đa của một lớp')

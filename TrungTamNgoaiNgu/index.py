@@ -1,12 +1,12 @@
 import math
 import cloudinary.uploader
 import cloudinary
-from flask import render_template, request, redirect, session, jsonify, flash
-from flask_login import login_user, logout_user, current_user, login_required
-
+from flask import render_template, request, redirect, flash,session, jsonify
+from flask_login import login_user, logout_user, login_required, current_user
+from TrungTamNgoaiNgu.models import Class, Enrollment, UserRole
 from TrungTamNgoaiNgu import app, dao, login, db, utils, admin
 from TrungTamNgoaiNgu.decoraters import anonymous_required
-from TrungTamNgoaiNgu.models import UserRole, Class, Enrollment
+
 
 
 
@@ -23,13 +23,11 @@ def index():
     course_id = request.args.get('course_id')
     page = request.args.get('page', 1)
 
-    # 2. Lấy danh sách lớp (đã bị cắt nhỏ)
     classes = dao.load_classes(course_id=course_id, kw=kw, page=int(page))
 
-    # 3. Tính tổng số trang
     total = dao.count_classes(course_id=course_id, kw=kw)
     page_size = app.config['PAGE_SIZE']
-    pages = math.ceil(total / page_size)  # Làm tròn lên (vd 2.1 trang -> 3 trang)
+    pages = math.ceil(total / page_size)
 
     return render_template("index.html", classes=classes, pages=pages)
 
@@ -60,7 +58,6 @@ def login_my_user():
         if user:
             login_user(user)
 
-            # --- ĐIỀU HƯỚNG THEO VAI TRÒ ---
             if user.role == UserRole.ADMIN:
                 return redirect('/admin')
             elif user.role == UserRole.CASHIER:
@@ -68,7 +65,6 @@ def login_my_user():
             elif user.role == UserRole.TEACHER:
                 return redirect('/teacher')
             else:
-                # Học viên hoặc người thường
                 next_page = request.args.get('next')
                 return redirect(next_page if next_page else "/")
         else:
@@ -125,9 +121,6 @@ def login_admin_process():
         return redirect("/admin")
 
 
-# =========================================================
-# 2. XỬ LÝ GIỎ HÀNG (API CART)
-# =========================================================
 
 @app.route('/cart')
 def cart():
@@ -136,7 +129,7 @@ def cart():
 
 @app.route("/api/carts", methods=['post'])
 def add_to_cart():
-    # Thêm sản phẩm vào giỏ
+
     cart = session.get('cart')
     if not cart:
         cart = {}
@@ -158,7 +151,6 @@ def add_to_cart():
 
 @app.route("/api/carts/<id>", methods=['put'])
 def update_cart(id):
-    # Cập nhật số lượng
     cart = session.get('cart')
     if cart and id in cart:
         cart[id]["quantity"] = int(request.json.get("quantity"))
@@ -168,7 +160,7 @@ def update_cart(id):
 
 @app.route("/api/carts/<id>", methods=['delete'])
 def delete_cart(id):
-    # Xóa món khỏi giỏ
+
     cart = session.get('cart')
     if cart and id in cart:
         del cart[id]
@@ -176,23 +168,18 @@ def delete_cart(id):
     return jsonify(utils.count_cart(cart=cart))
 
 
-# =========================================================
-# 3. CHECKOUT & THANH TOÁN (QUAN TRỌNG)
-# =========================================================
+
 
 @app.route("/api/checkout", methods=['post'])
 @login_required
 def checkout():
-    """
-    DÀNH CHO HỌC VIÊN: Bấm 'Đăng ký' từ giỏ hàng.
-    Chuyển Giỏ hàng -> Enrollment (Trạng thái Pending)
-    """
+
     cart = session.get('cart')
     if not cart:
         return jsonify({'status': 400, 'msg': 'Giỏ hàng rỗng!'})
 
     if dao.save_cart_to_db(cart, current_user.id):
-        del session['cart']  # Xóa giỏ hàng sau khi đăng ký xong
+        del session['cart']
         return jsonify({'status': 200, 'msg': 'Đăng ký thành công! Vui lòng đến quầy để đóng tiền.'})
 
     return jsonify({'status': 500, 'msg': 'Lỗi khi lưu đơn hàng.'})
@@ -211,10 +198,10 @@ def cashier_index():
 @app.route('/api/pay', methods=['post'])
 @login_required
 def pay():
-    # --- THÊM ĐOẠN CHECK QUYỀN NÀY ---
+
     if current_user.role != UserRole.CASHIER and current_user.role != UserRole.ADMIN:
         return jsonify({'status': 403, 'msg': 'Bạn không có quyền thực hiện hành động này!'})
-    # ---------------------------------
+
 
     data = request.json
     enroll_id = data.get('enroll_id')
@@ -225,9 +212,6 @@ def pay():
         return jsonify({"status": 200, "msg": "Thanh toán thành công"})
 
     return jsonify({"status": 500, "msg": "Lỗi hệ thống hoặc phiếu không hợp lệ"})
-# =========================================================
-# 4. CHỨC NĂNG GIÁO VIÊN (TEACHER)
-# =========================================================
 
 @app.route("/teacher")
 @login_required
@@ -258,7 +242,7 @@ def attendance(class_id):
     if request.method == 'POST':
         students = dao.get_students_by_class(class_id)
         for s in students:
-            # Checkbox: nếu tích thì value="on", ko tích thì None
+
             is_present = (request.form.get(f"att_{s.enroll_id}") == "on")
             dao.save_daily_attendance(s.enroll_id, is_present)
         return redirect(f"/teacher/class/{class_id}/attendance")
@@ -271,19 +255,16 @@ def attendance(class_id):
 @app.route("/api/save-grades", methods=['post'])
 @login_required
 def save_grades():
-    # 1. Kiểm tra quyền Giáo viên
+
     if current_user.role != UserRole.TEACHER:
         return jsonify({"status": 403, "err_msg": "Không có quyền truy cập"})
 
     try:
         data = request.json
-
-        # 2. VÒNG LẶP KIỂM TRA ĐIỂM (VALIDATION)
-        # Nếu có điểm sai -> Return lỗi ngay lập tức
         for item in data:
             for s in item['scores']:
                 try:
-                    # Chuyển về số thực để so sánh
+
                     val = float(s['value'])
                     if val < 0 or val > 10:
                         return jsonify({
@@ -291,65 +272,54 @@ def save_grades():
                             "err_msg": f"Lỗi: Điểm '{s['name']}' là {val}. Điểm phải từ 0 đến 10."
                         })
                 except ValueError:
-                    # Nếu nhập chữ thay vì số
+
                     return jsonify({"status": 400, "err_msg": "Dữ liệu điểm không hợp lệ (phải là số)."})
 
-        # 3. VÒNG LẶP LƯU DỮ LIỆU (CHỈ CHẠY KHI KHÔNG CÓ LỖI Ở TRÊN)
+
         for item in data:
             dao.save_grade_with_details(item['enroll_id'], item['scores'])
 
-        # 4. QUAN TRỌNG: PHẢI CÓ DÒNG RETURN NÀY CHO TRƯỜNG HỢP THÀNH CÔNG
+
         return jsonify({"status": 200, "msg": "Lưu bảng điểm thành công!"})
 
     except Exception as ex:
-        # 5. Return khi có lỗi hệ thống (Code, Database...)
+
         return jsonify({"status": 500, "err_msg": str(ex)})
 
 
 @app.route("/classes/<int:class_id>")
 def class_details(class_id):
-    # Gọi hàm lấy lớp học theo ID (đã có trong dao.py)
+
     c = dao.get_class_by_id(class_id)
     return render_template('classes_details.html', prod=c)
 
 
-from flask import render_template, request, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required, current_user
-from TrungTamNgoaiNgu import app, db
-from TrungTamNgoaiNgu.models import Class, Enrollment, UserRole
 
-
-# ... (Các import khác của bạn giữ nguyên) ...
 
 @app.route('/register-class/<int:class_id>', methods=['POST'])
 @login_required
 def register_class(class_id):
-    from sqlalchemy.exc import IntegrityError  # Import thêm cái này để bắt lỗi trùng
+    from sqlalchemy.exc import IntegrityError
 
     try:
-        # 1. Lấy thông tin lớp mới nhất từ DB
         my_class = Class.query.get(class_id)
 
         if not my_class:
             flash('Lớp học không tồn tại!', 'danger')
             return redirect('/')
 
-        # 2. KIỂM TRA ĐÃ ĐĂNG KÝ CHƯA (Check thủ công)
-        # Nếu đã có trong danh sách enrollment của lớp thì chặn luôn
         existing = Enrollment.query.filter_by(student_id=current_user.id, class_id=class_id).first()
         if existing:
             flash(f'Bạn đã đăng ký lớp {my_class.name} rồi! Không thể đăng ký lại.', 'warning')
             return redirect('/')
 
-        # 3. KIỂM TRA SĨ SỐ (Check full slot)
-        # Đếm trực tiếp từ DB cho chính xác
         current_count = Enrollment.query.filter_by(class_id=class_id).count()
 
         if current_count >= my_class.max_students:
             flash(f'Thông báo: Lớp {my_class.name} đã ĐỦ SĨ SỐ (Full slot). Vui lòng chọn lớp khác!', 'danger')
             return redirect('/')
 
-        # 4. NẾU OK HẾT -> THÊM VÀO
+
         new_enrollment = Enrollment(student_id=current_user.id, class_id=class_id)
         db.session.add(new_enrollment)
         db.session.commit()
@@ -357,7 +327,6 @@ def register_class(class_id):
         flash(f'Đăng ký thành công lớp: {my_class.name}!', 'success')
 
     except IntegrityError:
-        # 5. LỚP BẢO VỆ CUỐI CÙNG (Nếu Database báo trùng khóa Unique)
         db.session.rollback()
         flash(f'Hệ thống phát hiện bạn đã đăng ký lớp {my_class.name} rồi.', 'warning')
 

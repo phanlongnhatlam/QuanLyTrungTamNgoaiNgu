@@ -4,10 +4,8 @@ def count_cart(cart):
 
     if cart:
         for c in cart.values():
-            # Logic cũ: total_quantity += c['quantity']
-            # Logic mới: Mỗi món là 1 đơn vị
             total_quantity += 1
-            total_amount += c['price'] # Giá tiền thì vẫn cộng dồn
+            total_amount += c['price']
 
     return {
         "total_amount": total_amount,

@@ -43,7 +43,7 @@
 
 <script>
     function addToCart(id, name, price) {
-        // Gọi API thêm vào giỏ hàng (đã viết trong index.py)
+
         fetch('/api/carts', {
             method: 'post',
             body: JSON.stringify({
@@ -55,7 +55,7 @@
                 'Content-Type': 'application/json'
             }
         }).then(res => res.json()).then(data => {
-            // Cập nhật số lượng trên icon giỏ hàng
+
             let counters = document.getElementsByClassName("cart-counter");
             for (let c of counters)
                 c.innerText = data.total_quantity;
