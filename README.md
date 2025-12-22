@@ -36,10 +36,8 @@
 * **Đăng ký trực tuyến:** Thêm khóa học vào giỏ hàng và đăng ký nhanh.
 * Xem thời khóa biểu và kết quả học tập cá nhân.
 ## 🛠 HƯỚNG DẪN CÀI ĐẶT
-Thực hiện tuần tự các bước từ bước 1:
-
-Bước 1: Clone dự án
 ```bash
+Bước 1: Clone dự án
 git clone [https://github.com/username/QuanLyTrungTamNgoaiNgu.git](https://github.com/username/QuanLyTrungTamNgoaiNgu.git)
 cd QuanLyTrungTamNgoaiNgu
 Bước 2: Cài đặt môi trường ảo
